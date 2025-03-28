@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Carousel } from "react-bootstrap"; // ✅ Bootstrap Carousel
+import { Carousel } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./MovieCarousel.css";
 import { tollywoodMovies, bollywoodMovies, hollywoodMovies } from "../data/movieList";
@@ -18,10 +18,10 @@ const MovieCarousel = () => {
 
       try {
         const getRandomMovies = (movies, count) =>
-          [...movies].sort(() => Math.random() - 0.5).slice(0, count);
+            [...movies].sort(() => Math.random() - 0.5).slice(0, count);
 
         let selectedMovies = [
-          ...getRandomMovies(tollywoodMovies, 24), // ✅ Fetch more movies
+          ...getRandomMovies(tollywoodMovies, 24),
           ...getRandomMovies(bollywoodMovies, 24),
           ...getRandomMovies(hollywoodMovies, 24),
         ];
@@ -31,25 +31,24 @@ const MovieCarousel = () => {
 
         while (validMovies.length < 18 && retries < 15) {
           let movieRequests = selectedMovies.map((title) =>
-            axios.get(`https://www.omdbapi.com/?t=${title}&apikey=${OMDB_API_KEY}`)
+              axios.get(`https://www.omdbapi.com/?t=${title}&apikey=${OMDB_API_KEY}`)
           );
 
           const responses = await Promise.all(movieRequests);
 
           let filteredMovies = responses
-            .filter(
-              (res) =>
-                res.data.Response === "True" &&
-                res.data.Poster &&
-                res.data.Poster !== "N/A" &&
-                res.data.Poster !== ""
-            )
-            .map((res) => res.data.Poster);
+              .filter(
+                  (res) =>
+                      res.data.Response === "True" &&
+                      res.data.Poster &&
+                      res.data.Poster !== "N/A" &&
+                      res.data.Poster !== ""
+              )
+              .map((res) => res.data.Poster);
 
-          validMovies = [...new Set([...validMovies, ...filteredMovies])]; // ✅ Avoid Duplicates
+          validMovies = [...new Set([...validMovies, ...filteredMovies])]; // Avoid duplicates
           retries++;
 
-          // ✅ If we still don’t have enough posters, fetch more movies
           if (validMovies.length < 18) {
             selectedMovies = [
               ...getRandomMovies(tollywoodMovies, 12),
@@ -59,7 +58,7 @@ const MovieCarousel = () => {
           }
         }
 
-        // ✅ Ensure Exactly 6 Posters Per Slide
+        // Fill to make divisible by 6
         while (validMovies.length % 6 !== 0) {
           validMovies.push("https://via.placeholder.com/160x250?text=Coming+Soon");
         }
@@ -71,32 +70,31 @@ const MovieCarousel = () => {
     };
 
     fetchPosters();
-  }, []);
+  }, [OMDB_API_KEY]); // ✅ FIXED: added OMDB_API_KEY in dependency array
 
-  // ✅ **Chunk Posters into Sets of 6 for Auto-Scrolling**
   const chunkedPosters = [];
   for (let i = 0; i < moviePosters.length; i += 6) {
     chunkedPosters.push(moviePosters.slice(i, i + 6));
   }
 
   return (
-    <div className="movie-carousel">
-      {chunkedPosters.length > 0 ? (
-        <Carousel indicators={false} controls={true} interval={3000} className="carousel-container">
-          {chunkedPosters.map((posterGroup, index) => (
-            <Carousel.Item key={index} className="carousel-slide">
-              <div className="poster-group">
-                {posterGroup.map((poster, idx) => (
-                  <img key={idx} src={poster} alt="Movie Poster" className="poster-img" />
-                ))}
-              </div>
-            </Carousel.Item>
-          ))}
-        </Carousel>
-      ) : (
-        <p className="loading-text">Loading posters...</p>
-      )}
-    </div>
+      <div className="movie-carousel">
+        {chunkedPosters.length > 0 ? (
+            <Carousel indicators={false} controls={true} interval={3000} className="carousel-container">
+              {chunkedPosters.map((posterGroup, index) => (
+                  <Carousel.Item key={index} className="carousel-slide">
+                    <div className="poster-group">
+                      {posterGroup.map((poster, idx) => (
+                          <img key={idx} src={poster} alt="Movie Poster" className="poster-img" />
+                      ))}
+                    </div>
+                  </Carousel.Item>
+              ))}
+            </Carousel>
+        ) : (
+            <p className="loading-text">Loading posters...</p>
+        )}
+      </div>
   );
 };
 
