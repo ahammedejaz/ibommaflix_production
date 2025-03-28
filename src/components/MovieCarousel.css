@@ -1,0 +1,75 @@
+/* ✅ Main Movie Carousel */
+.movie-carousel {
+  max-width: 90%;
+  margin: auto;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: black;
+  padding: 10px 0;
+  margin-top: 10px;
+}
+
+/* ✅ Carousel Container */
+.carousel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* ✅ Multi-Image Slide */
+.carousel-slide {
+  text-align: center;
+}
+
+/* ✅ Group of 5 Posters in One Slide */
+.poster-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* ✅ Minimal gap */
+}
+
+/* ✅ Movie Poster Styling */
+.poster-img {
+  width: 100%;
+  max-width: 170px; /* ✅ Adjusted for better fit */
+  height: 260px; /* ✅ Prevent stretching */
+  object-fit: cover;
+  border-radius: 10px;
+  background-color: black;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* ✅ Responsive Design */
+@media (max-width: 1024px) {
+  .poster-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .poster-img {
+    max-width: 150px;
+    height: 230px;
+  }
+}
+
+@media (max-width: 768px) {
+  .poster-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .poster-img {
+    max-width: 140px;
+    height: 210px;
+  }
+}
+
+@media (max-width: 480px) {
+  .poster-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .poster-img {
+    max-width: 200px;
+    height: 280px;
+  }
+}

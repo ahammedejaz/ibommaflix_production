@@ -1,0 +1,9 @@
+.footer {
+  position: relative;  /* ✅ No fixed position, allowing it to scroll */
+  width: 100%;
+  background-color: black;
+  color: gold;
+  text-align: center;
+  padding: 10px;
+  margin-top: 50px; /* ✅ Adds space before the footer */
+}

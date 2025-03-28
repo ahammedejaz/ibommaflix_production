@@ -1,0 +1,32 @@
+.contact-container {
+  background-color: #222;
+  padding: 30px;
+  text-align: center;
+}
+
+.contact-container h2 {
+  color: gold;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: auto;
+}
+
+input, textarea {
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid gold;
+  background: black;
+  color: white;
+}
+
+button {
+  padding: 10px;
+  background-color: gold;
+  border: none;
+  color: black;
+  cursor: pointer;
+}

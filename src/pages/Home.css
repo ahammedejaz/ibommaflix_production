@@ -1,0 +1,215 @@
+/* ✅ Movie Section */
+.movie-category {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+/* ✅ Movie Cards (Fixed Alignment & Responsiveness) */
+.movie-card {
+  width: 220px;  /* ✅ Bigger Cards */
+  height: 350px; /* ✅ Prevent Stretching */
+  background: black;
+  border: 2px solid gold;
+  border-radius: 10px;
+  text-align: center;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+/* ✅ Movie Poster (Fixed Size & No Stretching) */
+.movie-img {
+  width: 100%;
+  height: 260px; /* ✅ Fixed Height to Prevent Stretching */
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* ✅ Movie Name */
+.movie-title {
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  color: gold !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  width: 100% !important;
+  margin-top: 10px !important;
+}
+
+/* ✅ Movie Year */
+.movie-year {
+  font-size: 16px !important;
+  font-weight: bold !important;
+  color: gray !important;
+  text-align: center !important;
+  margin-top: 5px !important;
+}
+
+/* ✅ Movie Cards Alignment */
+.movie-cards-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap; /* ✅ Prevents Overlapping in Mobile View */
+  gap: 15px;
+}
+
+/* ✅ Responsive Design */
+@media (max-width: 1024px) {
+  .movie-card {
+    width: 180px;
+    height: 320px;
+  }
+  .movie-img {
+    height: 230px;
+  }
+}
+
+@media (max-width: 768px) {
+  .movie-cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .movie-card {
+    width: 200px;
+    height: 340px;
+  }
+  .movie-img {
+    height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .movie-card {
+    width: 220px;
+    height: 360px;
+  }
+  .movie-img {
+    height: 270px;
+  }
+}
+
+.poster-card {
+  position: relative;
+  width: 190px;
+  height: 400px; /* ✅ Adjusted height */
+  background: black;
+  border-radius: 10px; /* ✅ Soft Corners */
+  text-align: center;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* ✅ Gradient Gold Border (Top: Gold → Bottom: Black) */
+  border: 2px solid transparent;
+  border-image: linear-gradient(to bottom, #FFD700, #000000);
+  border-image-slice: 1;
+}
+
+/* ✅ Movie Poster */
+.poster-img {
+  width: 100%;
+  height: 250px; /* ✅ Fixed height for uniformity */
+  object-fit: cover;
+  border-radius: 10px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  margin-top: 10px;
+}
+
+/* ✅ Hover Effect */
+.poster-card:hover .poster-img {
+  transform: scale(1.05);
+  filter: brightness(70%);
+}
+
+/* ✅ Play Button Overlay */
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: gold;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.poster-card:hover .play-button {
+  opacity: 1;
+}
+
+/* ✅ Movie Title */
+.poster-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: gold;
+  margin-top: 10px; /* ✅ Ensures space between image & text */
+  text-align: center;
+  white-space: wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 90%;
+}
+
+/* ✅ Movie Year */
+.poster-year {
+  font-size: 14px;
+  font-weight: bold;
+  color: gray;
+  margin-top: 2px;
+  text-align: center;
+}
+
+/* ✅ Tagline Section */
+.tagline-container {
+  text-align: center;
+  margin-top: 30px;
+  padding: 10px;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ✅ Tagline Heading */
+.tagline-heading {
+  font-size: 25px;
+  font-weight: bold;
+  color: gold;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.3);
+}
+
+/* ✅ Tagline Paragraph */
+.tagline-text {
+  font-size: 18px;
+  color: lightgray;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+/* Stylish Scroll for Modal */
+.modal-box {
+  max-height: 95vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: gold #222222; /* Customize scroll bar color */
+}
+
+.modal-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-box::-webkit-scrollbar-thumb {
+  background-color: gold;
+  border-radius: 4px;
+}
+
+.modal-box::-webkit-scrollbar-track {
+  background-color: #2f4f4f;
+}
