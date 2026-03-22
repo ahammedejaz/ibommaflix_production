@@ -133,18 +133,18 @@ const MovieDetails = () => {
               ))}
             </div>
 
-            {/* Rating box — IMDb style */}
-            <div className="movie-rating-box">
-              <div className="rating-star">&#9733;</div>
-              <div className="rating-info">
-                <span className="rating-score">{movie.imdbRating}</span>
-                <span className="rating-out-of">/10</span>
+            {/* Rating + Verdict — left aligned below genre */}
+            <div className="movie-rating-section">
+              <div className="movie-rating-box">
+                <div className="rating-star">&#9733;</div>
+                <div className="rating-info">
+                  <span className="rating-score">{movie.imdbRating}</span>
+                  <span className="rating-out-of">/10</span>
+                </div>
+                <span className="rating-source">IMDb</span>
               </div>
-              <span className="rating-source">IMDb</span>
+              <p className="movie-details-verdict">{getVerdict(movie.imdbRating)}</p>
             </div>
-
-            {/* Verdict */}
-            <p className="movie-details-verdict">{getVerdict(movie.imdbRating)}</p>
 
             {/* Plot */}
             <p className="movie-plot">{movie.Plot}</p>
