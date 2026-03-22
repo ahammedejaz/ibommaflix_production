@@ -27,16 +27,9 @@ const Home = () => {
   const OMDB_API_KEY = process.env.REACT_APP_OMDB_API_KEY;
   useDocumentTitle("iBommaFlix - Discover Telugu, Hindi & English Movies");
 
-  // Fetch Exactly 5 Valid Movie Posters with Caching
+  // Fetch 5 random movies — fresh on every visit, cache individual movie data only
   const fetchMoviesData = useCallback(async (movies) => {
     try {
-      const cacheKey = `movies_${movies[0]}`;
-      const cachedData = localStorage.getItem(cacheKey);
-
-      if (cachedData) {
-        return JSON.parse(cachedData);
-      }
-
       let validMovies = [];
       let retries = 0;
 
@@ -47,9 +40,19 @@ const Home = () => {
         }
 
         const selectedMovies = Array.from(uniqueMovies);
-        const movieRequests = selectedMovies.map((title) =>
-          axios.get(`https://www.omdbapi.com/?t=${title}&apikey=${OMDB_API_KEY}`)
-        );
+        const movieRequests = selectedMovies.map(async (title) => {
+          // Cache individual movie responses to save API calls
+          const cacheKey = `movie_${title}`;
+          const cached = localStorage.getItem(cacheKey);
+          if (cached) {
+            try { return { data: JSON.parse(cached) }; } catch { /* fall through */ }
+          }
+          const res = await axios.get(`https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${OMDB_API_KEY}`);
+          if (res.data.Response === "True") {
+            localStorage.setItem(cacheKey, JSON.stringify(res.data));
+          }
+          return res;
+        });
         const responses = await Promise.all(movieRequests);
 
         validMovies = responses
@@ -73,7 +76,6 @@ const Home = () => {
         });
       }
 
-      localStorage.setItem(cacheKey, JSON.stringify(validMovies));
       return validMovies;
     } catch {
       return [];
