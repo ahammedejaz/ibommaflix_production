@@ -4,6 +4,8 @@ import axios from "axios";
 import CustomNavbar from "../components/Navbar";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
+import StructuredData from "../components/StructuredData";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./MovieDetails.css";
 
 const MovieDetails = () => {
@@ -12,6 +14,7 @@ const MovieDetails = () => {
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const OMDB_API_KEY = process.env.REACT_APP_OMDB_API_KEY;
+  useDocumentTitle(movie ? `${movie.Title} (${movie.Year}) - iBommaFlix` : "Loading... - iBommaFlix");
 
   const getVerdict = (rating) => {
     if (!rating || rating === "N/A") return "Rating unavailable";
@@ -76,8 +79,28 @@ const MovieDetails = () => {
     );
   }
 
+  const movieSchema = movie ? {
+    "@context": "https://schema.org",
+    "@type": "Movie",
+    "name": movie.Title,
+    "image": movie.Poster,
+    "datePublished": movie.Year,
+    "director": { "@type": "Person", "name": movie.Director },
+    "genre": movie.Genre,
+    "description": movie.Plot,
+    ...(movie.imdbRating && movie.imdbRating !== "N/A" ? {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": movie.imdbRating,
+        "bestRating": "10",
+        "worstRating": "1"
+      }
+    } : {})
+  } : null;
+
   return (
     <div>
+      {movieSchema && <StructuredData data={movieSchema} />}
       <CustomNavbar />
       <div className="movie-details-container">
         <button className="back-btn" onClick={() => navigate(-1)}>&#8592; Back</button>

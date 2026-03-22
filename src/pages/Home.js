@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -9,6 +10,8 @@ import SearchBar from "../components/SearchBar";
 import { tollywoodMovies, bollywoodMovies, hollywoodMovies } from "../data/movieList";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
+import StructuredData from "../components/StructuredData";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./Home.css";
 
 const Home = () => {
@@ -19,7 +22,10 @@ const Home = () => {
   const [movie, setMovie] = useState(null);
   const [verdict, setVerdict] = useState("Fetching Verdict...");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const OMDB_API_KEY = process.env.REACT_APP_OMDB_API_KEY;
+  useDocumentTitle("iBommaFlix - Discover Telugu, Hindi & English Movies");
 
   // Fetch Exactly 5 Valid Movie Posters with Caching
   const fetchMoviesData = useCallback(async (movies) => {
@@ -34,7 +40,7 @@ const Home = () => {
       let validMovies = [];
       let retries = 0;
 
-      while (validMovies.length < 5 && retries < 10) {
+      while (validMovies.length < 5 && retries < 5) {
         let uniqueMovies = new Set();
         while (uniqueMovies.size < 5) {
           uniqueMovies.add(movies[Math.floor(Math.random() * movies.length)]);
@@ -76,9 +82,11 @@ const Home = () => {
 
   useEffect(() => {
     const loadMovies = async () => {
+      setLoading(true);
       setTollywoodMoviesData(await fetchMoviesData(tollywoodMovies));
       setBollywoodMoviesData(await fetchMoviesData(bollywoodMovies));
       setHollywoodMoviesData(await fetchMoviesData(hollywoodMovies));
+      setLoading(false);
     };
     loadMovies();
   }, [fetchMoviesData]);
@@ -138,8 +146,23 @@ const Home = () => {
     { title: "Trending in Hollywood", data: hollywoodMoviesData },
   ];
 
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "iBommaFlix",
+    "url": "https://ibommaflix.com",
+    "description": "Movie discovery and rating aggregation platform for Telugu, Hindi, and English movies",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://ibommaflix.com/?search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
     <div>
+      <StructuredData data={websiteSchema} />
+      <h1 className="sr-only">iBommaFlix - Discover Movies</h1>
       <CustomNavbar />
       <MovieCarousel />
 
@@ -161,31 +184,46 @@ const Home = () => {
 
       {/* Movie Sections — Netflix-style horizontal scroll */}
       <div className="movie-sections">
-        {categories.map((category, i) => (
-          <React.Fragment key={i}>
-            <div className="movie-category">
-              <h2 className="category-title">{category.title}</h2>
-              <div className="scroll-row">
-                {category.data.map((m, index) => (
-                  <div key={index} className="poster-card" onClick={() => fetchMovie(m.title)}>
-                    <img
-                      src={m.poster}
-                      alt={m.title}
-                      className="poster-img"
-                      onError={handleImgError}
-                      loading="lazy"
-                    />
-                    <div className="play-button">&#9654;</div>
-                    <p className="poster-title">{m.title}</p>
-                    <p className="poster-year">{m.year}</p>
-                  </div>
-                ))}
+        {loading ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p className="loading-movies-text">Loading movies...</p>
+          </div>
+        ) : (
+          categories.map((category, i) => (
+            <React.Fragment key={i}>
+              <div className="movie-category">
+                <h2 className="category-title">{category.title}</h2>
+                <div className="scroll-row">
+                  {category.data.map((m, index) => (
+                    <div
+                      key={index}
+                      className="poster-card"
+                      onClick={() => navigate(`/movie/${encodeURIComponent(m.title)}`)}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`View details for ${m.title}`}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") navigate(`/movie/${encodeURIComponent(m.title)}`); }}
+                    >
+                      <img
+                        src={m.poster}
+                        alt={m.title}
+                        className="poster-img"
+                        onError={handleImgError}
+                        loading="lazy"
+                      />
+                      <div className="play-button">&#9654;</div>
+                      <p className="poster-title">{m.title}</p>
+                      <p className="poster-year">{m.year}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-            {/* Ad — between Bollywood and Hollywood sections */}
-            {i === 1 && <AdBanner adSlot="0987654321" />}
-          </React.Fragment>
-        ))}
+              {/* Ad — between Bollywood and Hollywood sections */}
+              {i === 1 && <AdBanner adSlot="0987654321" />}
+            </React.Fragment>
+          ))
+        )}
       </div>
 
       {/* Material-UI Movie Popup Modal */}

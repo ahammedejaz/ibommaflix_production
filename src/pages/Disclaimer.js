@@ -1,8 +1,10 @@
 import React from "react";
 import CustomNavbar from "../components/Navbar";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./Legal.css";
 
 const Disclaimer = () => {
+  useDocumentTitle("Disclaimer - iBommaFlix");
   return (
     <div>
       <CustomNavbar />

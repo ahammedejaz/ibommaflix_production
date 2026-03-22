@@ -136,3 +136,22 @@
     width: 100%;
   }
 }
+
+/* Back to Top */
+.back-to-top-container {
+  text-align: center;
+  margin: 20px 0 10px;
+}
+
+.back-to-top-link {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.back-to-top-link:hover {
+  color: #FFD700;
+}

@@ -1,8 +1,10 @@
 import React from "react";
 import CustomNavbar from "../components/Navbar";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./About.css";
 
 const About = () => {
+  useDocumentTitle("About - iBommaFlix");
   return (
     <div>
       <CustomNavbar />

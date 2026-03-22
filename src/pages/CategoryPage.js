@@ -5,6 +5,7 @@ import CustomNavbar from "../components/Navbar";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
 import { tollywoodMovies, bollywoodMovies, hollywoodMovies } from "../data/movieList";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./CategoryPage.css";
 
 const categoryMap = {
@@ -23,6 +24,7 @@ const CategoryPage = () => {
   const OMDB_API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 
   const category = categoryMap[type];
+  useDocumentTitle(category ? `${category.label} Movies - iBommaFlix` : "Category - iBommaFlix");
 
   const fetchBatch = useCallback(async (startIndex) => {
     if (!category) return;
@@ -126,6 +128,14 @@ const CategoryPage = () => {
             </button>
           </div>
         )}
+        <div className="back-to-top-container">
+          <button
+            className="back-to-top-link"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
+            Back to Top
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import CustomNavbar from "../components/Navbar";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./Contact.css";
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  useDocumentTitle("Contact Us - iBommaFlix");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,7 +27,9 @@ const Contact = () => {
         <h1 className="contact-page-title">Contact Us</h1>
         <p className="contact-page-subtitle">Have a question or feedback? We'd love to hear from you.</p>
         <form className="contact-form" onSubmit={handleSubmit}>
+          <label htmlFor="contact-name" className="sr-only">Name</label>
           <input
+            id="contact-name"
             type="text"
             name="name"
             placeholder="Your Name"
@@ -33,7 +37,9 @@ const Contact = () => {
             value={formData.name}
             onChange={handleChange}
           />
+          <label htmlFor="contact-email" className="sr-only">Email</label>
           <input
+            id="contact-email"
             type="email"
             name="email"
             placeholder="Your Email"
@@ -41,7 +47,9 @@ const Contact = () => {
             value={formData.email}
             onChange={handleChange}
           />
+          <label htmlFor="contact-message" className="sr-only">Message</label>
           <textarea
+            id="contact-message"
             name="message"
             placeholder="Your Message"
             rows="5"
