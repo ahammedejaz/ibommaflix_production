@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Container } from "react-bootstrap";
-import { Modal, Box, Typography, Button } from "@mui/material"; // Material-UI Modal
+import { Modal, Box, Typography, Button } from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CustomNavbar from "../components/Navbar";
 import MovieCarousel from "../components/MovieCarousel";
-import SearchBar from "../components/SearchBar"; // Import SearchBar
+import SearchBar from "../components/SearchBar";
 import { tollywoodMovies, bollywoodMovies, hollywoodMovies } from "../data/movieList";
+import posterPlaceholder from "../assets/poster-placeholder.svg";
+import AdBanner from "../components/AdBanner";
 import "./Home.css";
 
 const Home = () => {
@@ -22,16 +24,15 @@ const Home = () => {
   // Fetch Exactly 5 Valid Movie Posters with Caching
   const fetchMoviesData = useCallback(async (movies) => {
     try {
-      const cacheKey = `movies_${movies[0]}`; // Unique cache key based on the first movie
+      const cacheKey = `movies_${movies[0]}`;
       const cachedData = localStorage.getItem(cacheKey);
 
       if (cachedData) {
-        // If cached data exists, use it
         return JSON.parse(cachedData);
       }
 
       let validMovies = [];
-      let retries = 0; // Retry counter
+      let retries = 0;
 
       while (validMovies.length < 5 && retries < 10) {
         let uniqueMovies = new Set();
@@ -51,24 +52,22 @@ const Home = () => {
             title: res.data.Title,
             year: res.data.Year,
             poster: res.data.Poster,
-            imdbRating: res.data.imdbRating, // Capture imdbRating
+            imdbRating: res.data.imdbRating,
           }));
 
         retries++;
       }
 
-      // If still less than 5, fill the rest with a generic movie poster
+      // Fill remaining slots with placeholder
       while (validMovies.length < 5) {
         validMovies.push({
           title: "Coming Soon",
           year: "N/A",
-          poster: "https://via.placeholder.com/160x250?text=Coming+Soon",
+          poster: posterPlaceholder,
         });
       }
 
-      // Cache the fetched data for future use
       localStorage.setItem(cacheKey, JSON.stringify(validMovies));
-
       return validMovies;
     } catch {
       return [];
@@ -84,23 +83,15 @@ const Home = () => {
     loadMovies();
   }, [fetchMoviesData]);
 
-  // Calculate the Verdict based on IMDb Rating
   const getVerdict = (rating) => {
     if (!rating || rating === "N/A") return "Rating unavailable";
-
     const imdbRating = parseFloat(rating);
-    if (imdbRating < 5) {
-      return "Not worth watching";
-    } else if (imdbRating >= 5 && imdbRating <= 6.5) {
-      return "Average";
-    } else if (imdbRating > 6.5 && imdbRating <= 8) {
-      return "Good to watch";
-    } else {
-      return "Worth watching";
-    }
+    if (imdbRating < 5) return "Not worth watching";
+    if (imdbRating <= 6.5) return "Average";
+    if (imdbRating <= 8) return "Good to watch";
+    return "Worth watching";
   };
 
-  // Fetch Movie Data for Search
   const fetchMovie = async (searchTerm) => {
     if (!searchTerm) return;
     try {
@@ -108,18 +99,17 @@ const Home = () => {
       const cachedData = localStorage.getItem(cacheKey);
 
       if (cachedData) {
-        // If cached data exists, use it
         const movieData = JSON.parse(cachedData);
         setMovie(movieData);
-        setVerdict(getVerdict(movieData.imdbRating)); // Calculate verdict
+        setVerdict(getVerdict(movieData.imdbRating));
         setIsModalOpen(true);
       } else {
         const res = await axios.get(`https://www.omdbapi.com/?t=${searchTerm}&apikey=${OMDB_API_KEY}`);
         if (res.data.Response === "True") {
           const movieData = res.data;
           setMovie(movieData);
-          setVerdict(getVerdict(movieData.imdbRating)); // Calculate verdict
-          localStorage.setItem(cacheKey, JSON.stringify(movieData)); // Cache the data
+          setVerdict(getVerdict(movieData.imdbRating));
+          localStorage.setItem(cacheKey, JSON.stringify(movieData));
           setIsModalOpen(true);
         } else {
           alert("Movie not found!");
@@ -130,18 +120,31 @@ const Home = () => {
     }
   };
 
-  // Close Modal and Reset Inputs
   const closeModal = () => {
     setIsModalOpen(false);
     setMovie(null);
     setVerdict("Fetching Verdict...");
-    setSearchInput(""); // Clears search input when modal is closed
+    setSearchInput("");
   };
+
+  const handleImgError = (e) => {
+    e.target.onerror = null;
+    e.target.src = posterPlaceholder;
+  };
+
+  const categories = [
+    { title: "Trending in Tollywood", data: tollywoodMoviesData },
+    { title: "Trending in Bollywood", data: bollywoodMoviesData },
+    { title: "Trending in Hollywood", data: hollywoodMoviesData },
+  ];
 
   return (
     <div>
       <CustomNavbar />
       <MovieCarousel />
+
+      {/* Ad — below hero carousel */}
+      <AdBanner adSlot="1234567890" />
 
       {/* Search Bar */}
       <Container className="mt-3 text-center">
@@ -156,31 +159,39 @@ const Home = () => {
         </p>
       </Container>
 
-      {/* Movie Sections (Ensures Exactly 5 Posters per Industry) */}
-      <Container className="movie-sections">
-        {[{ title: "Tollywood Movies", data: tollywoodMoviesData },
-          { title: "Bollywood Movies", data: bollywoodMoviesData },
-          { title: "Hollywood Movies", data: hollywoodMoviesData }].map((category, i) => (
-          <div key={i} className="movie-category">
-            <h2 className="text-gold text-center">{category.title}</h2>
-            <div className="poster-group">
-              {category.data.map((movie, index) => (
-                <div key={index} className="poster-card">
-                  <img src={movie.poster} alt={movie.title} className="poster-img" />
-                  <div className="play-button">▶</div>
-                  <p className="poster-title">{movie.title}</p>
-                  <p className="poster-year">{movie.year}</p>
-                </div>
-              ))}
+      {/* Movie Sections — Netflix-style horizontal scroll */}
+      <div className="movie-sections">
+        {categories.map((category, i) => (
+          <React.Fragment key={i}>
+            <div className="movie-category">
+              <h2 className="category-title">{category.title}</h2>
+              <div className="scroll-row">
+                {category.data.map((m, index) => (
+                  <div key={index} className="poster-card" onClick={() => fetchMovie(m.title)}>
+                    <img
+                      src={m.poster}
+                      alt={m.title}
+                      className="poster-img"
+                      onError={handleImgError}
+                      loading="lazy"
+                    />
+                    <div className="play-button">&#9654;</div>
+                    <p className="poster-title">{m.title}</p>
+                    <p className="poster-year">{m.year}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+            {/* Ad — between Bollywood and Hollywood sections */}
+            {i === 1 && <AdBanner adSlot="0987654321" />}
+          </React.Fragment>
         ))}
-      </Container>
+      </div>
 
       {/* Material-UI Movie Popup Modal */}
       <Modal
         open={isModalOpen}
-        onClose={closeModal} // Updated to use closeModal
+        onClose={closeModal}
         aria-labelledby="movie-modal-title"
         sx={{
           display: "flex",
@@ -195,14 +206,20 @@ const Home = () => {
             color: "white",
             p: 3,
             borderRadius: 2,
-            width: 450,
+            width: { xs: "90vw", sm: 450 },
+            maxWidth: "95vw",
             textAlign: "center",
           }}
         >
           <Typography id="movie-modal-title" variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
             {movie?.Title} ({movie?.Year})
           </Typography>
-          <img src={movie?.Poster} alt={movie?.Title} className="movie-modal-img" />
+          <img
+            src={movie?.Poster}
+            alt={movie?.Title}
+            className="movie-modal-img"
+            onError={handleImgError}
+          />
           <Typography variant="body1" sx={{ mt: 2 }}><strong>Genre:</strong> {movie?.Genre}</Typography>
           <Typography variant="body1"><strong>IMDb Rating:</strong> {movie?.imdbRating}</Typography>
           <Typography variant="body1"><strong>Plot:</strong> {movie?.Plot}</Typography>
@@ -210,7 +227,7 @@ const Home = () => {
           <Button
             variant="contained"
             color="error"
-            onClick={closeModal} // Updated to use closeModal
+            onClick={closeModal}
             sx={{ mt: 2 }}
           >
             Close

@@ -1,13 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { Carousel } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./MovieCarousel.css";
 import { tollywoodMovies, bollywoodMovies, hollywoodMovies } from "../data/movieList";
+import posterPlaceholder from "../assets/poster-placeholder.svg";
+
+const getPostersPerSlide = () => {
+  const width = window.innerWidth;
+  if (width < 768) return 1;
+  if (width < 1024) return 3;
+  return 6;
+};
 
 const MovieCarousel = () => {
   const [moviePosters, setMoviePosters] = useState([]);
+  const [postersPerSlide, setPostersPerSlide] = useState(getPostersPerSlide);
   const OMDB_API_KEY = process.env.REACT_APP_OMDB_API_KEY;
+
+  const handleResize = useCallback(() => {
+    setPostersPerSlide(getPostersPerSlide());
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [handleResize]);
 
   useEffect(() => {
     const fetchPosters = async () => {
@@ -46,7 +64,7 @@ const MovieCarousel = () => {
               )
               .map((res) => res.data.Poster);
 
-          validMovies = [...new Set([...validMovies, ...filteredMovies])]; // Avoid duplicates
+          validMovies = [...new Set([...validMovies, ...filteredMovies])];
           retries++;
 
           if (validMovies.length < 18) {
@@ -58,11 +76,6 @@ const MovieCarousel = () => {
           }
         }
 
-        // Fill to make divisible by 6
-        while (validMovies.length % 6 !== 0) {
-          validMovies.push("https://via.placeholder.com/160x250?text=Coming+Soon");
-        }
-
         setMoviePosters(validMovies);
       } catch (error) {
         console.error("Error fetching movie posters from OMDb:", error);
@@ -70,12 +83,20 @@ const MovieCarousel = () => {
     };
 
     fetchPosters();
-  }, [OMDB_API_KEY]); // ✅ FIXED: added OMDB_API_KEY in dependency array
+  }, [OMDB_API_KEY]);
 
   const chunkedPosters = [];
-  for (let i = 0; i < moviePosters.length; i += 6) {
-    chunkedPosters.push(moviePosters.slice(i, i + 6));
+  for (let i = 0; i < moviePosters.length; i += postersPerSlide) {
+    const chunk = moviePosters.slice(i, i + postersPerSlide);
+    if (chunk.length === postersPerSlide) {
+      chunkedPosters.push(chunk);
+    }
   }
+
+  const handleImgError = (e) => {
+    e.target.onerror = null;
+    e.target.src = posterPlaceholder;
+  };
 
   return (
       <div className="movie-carousel">
@@ -85,7 +106,14 @@ const MovieCarousel = () => {
                   <Carousel.Item key={index} className="carousel-slide">
                     <div className="poster-group">
                       {posterGroup.map((poster, idx) => (
-                          <img key={idx} src={poster} alt="Movie Poster" className="poster-img" />
+                          <img
+                            key={idx}
+                            src={poster}
+                            alt="Movie Poster"
+                            className="carousel-poster-img"
+                            onError={handleImgError}
+                            loading={index > 0 ? "lazy" : undefined}
+                          />
                       ))}
                     </div>
                   </Carousel.Item>
