@@ -79,7 +79,7 @@ const MovieDetails = () => {
     );
   }
 
-  const movieSchema = movie ? {
+  const movieSchema = {
     "@context": "https://schema.org",
     "@type": "Movie",
     "name": movie.Title,
@@ -96,14 +96,27 @@ const MovieDetails = () => {
         "worstRating": "1"
       }
     } : {})
-  } : null;
+  };
 
   return (
     <div>
-      {movieSchema && <StructuredData data={movieSchema} />}
+      <StructuredData data={movieSchema} />
       <CustomNavbar />
       <div className="movie-details-container">
+        {/* Top bar — back button */}
         <button className="back-btn" onClick={() => navigate(-1)}>&#8592; Back</button>
+
+        {/* Title section — full width like IMDb */}
+        <div className="movie-header">
+          <h1 className="movie-header-title">{movie.Title}</h1>
+          <div className="movie-header-sub">
+            <span>{movie.Year}</span>
+            {movie.Rated && movie.Rated !== "N/A" && <span>{movie.Rated}</span>}
+            {movie.Runtime && movie.Runtime !== "N/A" && <span>{movie.Runtime}</span>}
+          </div>
+        </div>
+
+        {/* Main content — poster left, info right */}
         <div className="movie-details-content">
           <div className="movie-details-poster">
             <img
@@ -113,35 +126,59 @@ const MovieDetails = () => {
             />
           </div>
           <div className="movie-details-info">
-            <h1 className="movie-details-title">{movie.Title} <span>({movie.Year})</span></h1>
-            <div className="movie-details-meta">
-              {movie.Runtime && movie.Runtime !== "N/A" && <span>{movie.Runtime}</span>}
-              {movie.Language && movie.Language !== "N/A" && <span>{movie.Language}</span>}
-              {movie.Rated && movie.Rated !== "N/A" && <span>{movie.Rated}</span>}
+            {/* Genre tags */}
+            <div className="movie-genre-tags">
+              {movie.Genre && movie.Genre.split(",").map((g, i) => (
+                <span key={i} className="genre-tag">{g.trim()}</span>
+              ))}
             </div>
-            <p className="movie-details-genre">{movie.Genre}</p>
-            <div className="movie-details-rating">
-              <span className="rating-value">{movie.imdbRating}</span>
-              <span className="rating-label">IMDb Rating</span>
-            </div>
-            <p className="movie-details-verdict">{getVerdict(movie.imdbRating)}</p>
-            <div className="movie-details-field">
-              <strong>Director:</strong> {movie.Director}
-            </div>
-            <div className="movie-details-field">
-              <strong>Actors:</strong> {movie.Actors}
-            </div>
-            <div className="movie-details-field">
-              <strong>Plot:</strong> {movie.Plot}
-            </div>
-            {movie.Awards && movie.Awards !== "N/A" && (
-              <div className="movie-details-field">
-                <strong>Awards:</strong> {movie.Awards}
+
+            {/* Rating box — IMDb style */}
+            <div className="movie-rating-box">
+              <div className="rating-star">&#9733;</div>
+              <div className="rating-info">
+                <span className="rating-score">{movie.imdbRating}</span>
+                <span className="rating-out-of">/10</span>
               </div>
-            )}
+              <span className="rating-source">IMDb</span>
+            </div>
+
+            {/* Verdict */}
+            <p className="movie-details-verdict">{getVerdict(movie.imdbRating)}</p>
+
+            {/* Plot */}
+            <p className="movie-plot">{movie.Plot}</p>
+
+            {/* Details grid — IMDb style key-value pairs */}
+            <div className="movie-info-grid">
+              {movie.Director && movie.Director !== "N/A" && (
+                <div className="info-row">
+                  <span className="info-label">Director</span>
+                  <span className="info-value">{movie.Director}</span>
+                </div>
+              )}
+              {movie.Actors && movie.Actors !== "N/A" && (
+                <div className="info-row">
+                  <span className="info-label">Stars</span>
+                  <span className="info-value">{movie.Actors}</span>
+                </div>
+              )}
+              {movie.Language && movie.Language !== "N/A" && (
+                <div className="info-row">
+                  <span className="info-label">Language</span>
+                  <span className="info-value">{movie.Language}</span>
+                </div>
+              )}
+              {movie.Awards && movie.Awards !== "N/A" && (
+                <div className="info-row">
+                  <span className="info-label">Awards</span>
+                  <span className="info-value">{movie.Awards}</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        {/* Ad — below movie info */}
+
         <AdBanner adSlot="1122334455" />
       </div>
     </div>

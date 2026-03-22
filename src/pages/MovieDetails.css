@@ -11,6 +11,7 @@
   margin-top: 80px;
 }
 
+/* Back Button */
 .back-btn {
   background: none;
   border: 1px solid #FFD700;
@@ -28,101 +29,152 @@
   color: #000;
 }
 
+/* Header — full width title like IMDb */
+.movie-header {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 15px;
+}
+
+.movie-header-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #FFD700;
+  margin: 0 0 6px;
+}
+
+.movie-header-sub {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.movie-header-sub span {
+  color: #999;
+  font-size: 14px;
+}
+
+/* Main content — poster + info side by side */
 .movie-details-content {
   display: flex;
-  gap: 40px;
+  gap: 30px;
   align-items: flex-start;
 }
 
 .movie-details-poster img {
   width: 300px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
 }
 
 .movie-details-info {
   flex: 1;
 }
 
-.movie-details-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: #FFD700;
-  margin-bottom: 8px;
-}
-
-.movie-details-title span {
-  color: #999;
-  font-weight: 400;
-  font-size: 22px;
-}
-
-.movie-details-meta {
+/* Genre tags */
+.movie-genre-tags {
   display: flex;
-  gap: 15px;
-  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
 }
 
-.movie-details-meta span {
-  color: #ccc;
-  font-size: 14px;
-  padding: 3px 10px;
-  border: 1px solid #444;
-  border-radius: 4px;
+.genre-tag {
+  color: #FFD700;
+  font-size: 13px;
+  padding: 4px 12px;
+  border: 1px solid #FFD700;
+  border-radius: 20px;
 }
 
-.movie-details-genre {
-  color: #aaa;
-  font-size: 15px;
-  margin-bottom: 15px;
-}
-
-.movie-details-rating {
+/* Rating box — IMDb style */
+.movie-rating-box {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 12px 16px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  display: inline-flex;
 }
 
-.rating-value {
-  font-size: 32px;
-  font-weight: 700;
+.rating-star {
+  font-size: 28px;
   color: #FFD700;
 }
 
-.rating-label {
-  color: #999;
-  font-size: 14px;
+.rating-info {
+  display: flex;
+  align-items: baseline;
 }
 
+.rating-score {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.rating-out-of {
+  font-size: 16px;
+  color: #999;
+  margin-left: 2px;
+}
+
+.rating-source {
+  font-size: 12px;
+  color: #666;
+  margin-left: 8px;
+}
+
+/* Verdict */
 .movie-details-verdict {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #FFD700;
-  margin-bottom: 20px;
+  margin: 12px 0 20px;
   padding: 6px 14px;
   background: rgba(255, 215, 0, 0.1);
   border-radius: 5px;
   display: inline-block;
 }
 
-.movie-details-field {
-  color: #ddd;
+/* Plot */
+.movie-plot {
+  color: #ccc;
   font-size: 15px;
-  margin-bottom: 12px;
-  line-height: 1.6;
+  line-height: 1.7;
+  margin-bottom: 24px;
 }
 
-.movie-details-field strong {
+/* Info grid — IMDb style key-value rows */
+.movie-info-grid {
+  border-top: 1px solid #333;
+}
+
+.info-row {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid #222;
+}
+
+.info-label {
   color: #FFD700;
+  font-weight: 600;
+  font-size: 14px;
+  min-width: 100px;
 }
 
-/* Responsive — center on mobile only */
+.info-value {
+  color: #ddd;
+  font-size: 14px;
+  flex: 1;
+}
+
+/* Responsive — stack on mobile */
 @media (max-width: 768px) {
-  .back-btn {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+  .movie-header-title {
+    font-size: 26px;
   }
 
   .movie-details-content {
@@ -138,16 +190,41 @@
     text-align: center;
   }
 
-  .movie-details-meta {
+  .movie-genre-tags {
     justify-content: center;
   }
 
-  .movie-details-rating {
-    justify-content: center;
+  .movie-rating-box {
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .movie-details-verdict {
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .movie-header-sub {
+    justify-content: center;
+  }
+
+  .movie-header {
+    text-align: center;
+  }
+
+  .back-btn {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .info-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 4px;
+  }
+
+  .info-label {
+    min-width: unset;
   }
 }
