@@ -21,9 +21,6 @@
   font-size: 14px;
   margin-bottom: 20px;
   transition: background 0.2s;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .back-btn:hover {
@@ -34,8 +31,7 @@
 .movie-details-content {
   display: flex;
   gap: 40px;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
 }
 
 .movie-details-poster img {
@@ -46,7 +42,6 @@
 
 .movie-details-info {
   flex: 1;
-  text-align: center;
 }
 
 .movie-details-title {
@@ -66,7 +61,6 @@
   display: flex;
   gap: 15px;
   margin-bottom: 12px;
-  justify-content: center;
 }
 
 .movie-details-meta span {
@@ -86,7 +80,6 @@
 .movie-details-rating {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
   margin-bottom: 8px;
 }
@@ -124,8 +117,14 @@
   color: #FFD700;
 }
 
-/* Responsive */
+/* Responsive — center on mobile only */
 @media (max-width: 768px) {
+  .back-btn {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .movie-details-content {
     flex-direction: column;
     align-items: center;
@@ -140,6 +139,10 @@
   }
 
   .movie-details-meta {
+    justify-content: center;
+  }
+
+  .movie-details-rating {
     justify-content: center;
   }
 
