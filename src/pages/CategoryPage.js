@@ -1,67 +1,49 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
 import CustomNavbar from "../components/Navbar";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
-import { tollywoodMovies, bollywoodMovies, hollywoodMovies } from "../data/movieList";
+import { fetchTrendingMovies } from "../services/tmdbApi";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./CategoryPage.css";
 
-const categoryMap = {
-  tollywood: { label: "Tollywood", movies: tollywoodMovies },
-  bollywood: { label: "Bollywood", movies: bollywoodMovies },
-  hollywood: { label: "Hollywood", movies: hollywoodMovies },
+const categoryLabels = {
+  tollywood: "Tollywood",
+  bollywood: "Bollywood",
+  hollywood: "Hollywood",
 };
-
-const BATCH_SIZE = 20;
 
 const CategoryPage = () => {
   const { type } = useParams();
   const [movies, setMovies] = useState([]);
-  const [loadedCount, setLoadedCount] = useState(0);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const OMDB_API_KEY = process.env.REACT_APP_OMDB_API_KEY;
+  const [hasMore, setHasMore] = useState(true);
 
-  const category = categoryMap[type];
-  useDocumentTitle(category ? `${category.label} Movies - iBommaFlix` : "Category - iBommaFlix");
+  const label = categoryLabels[type];
+  useDocumentTitle(label ? `${label} Movies - iBommaFlix` : "Category - iBommaFlix");
 
-  const fetchBatch = useCallback(async (startIndex) => {
-    if (!category) return;
+  const fetchPage = useCallback(async (pageNum) => {
+    if (!label) return;
     setLoading(true);
 
-    const titles = category.movies.slice(startIndex, startIndex + BATCH_SIZE);
-    const results = [];
+    const results = await fetchTrendingMovies(type, pageNum);
 
-    const requests = titles.map((title) =>
-      axios
-        .get(`https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${OMDB_API_KEY}`)
-        .catch(() => null)
-    );
-
-    const responses = await Promise.all(requests);
-
-    responses.forEach((res) => {
-      if (res && res.data && res.data.Response === "True") {
-        results.push({
-          title: res.data.Title,
-          year: res.data.Year,
-          poster: res.data.Poster,
-          imdbRating: res.data.imdbRating,
-        });
-      }
-    });
-
-    setMovies((prev) => [...prev, ...results]);
-    setLoadedCount(startIndex + BATCH_SIZE);
+    if (results.length === 0) {
+      setHasMore(false);
+    } else {
+      setMovies((prev) => [...prev, ...results]);
+      setPage(pageNum + 1);
+    }
     setLoading(false);
-  }, [category, OMDB_API_KEY]);
+  }, [type, label]);
 
   useEffect(() => {
     setMovies([]);
-    setLoadedCount(0);
-    if (category) {
-      fetchBatch(0);
+    setPage(1);
+    setHasMore(true);
+    if (label) {
+      fetchPage(1);
     }
   }, [type]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -70,7 +52,7 @@ const CategoryPage = () => {
     e.target.src = posterPlaceholder;
   };
 
-  if (!category) {
+  if (!label) {
     return (
       <div>
         <CustomNavbar />
@@ -82,19 +64,17 @@ const CategoryPage = () => {
     );
   }
 
-  const hasMore = loadedCount < category.movies.length;
-
   return (
     <div>
       <CustomNavbar />
       <div className="category-container">
-        <h1 className="category-page-title">{category.label} Movies</h1>
+        <h1 className="category-page-title">{label} Movies</h1>
         <div className="category-grid">
           {movies.map((m, index) => (
-            <React.Fragment key={index}>
+            <React.Fragment key={m.id || index}>
               <Link to={`/movie/${encodeURIComponent(m.title)}`} className="category-card">
                 <img
-                  src={m.poster !== "N/A" ? m.poster : posterPlaceholder}
+                  src={m.poster}
                   alt={m.title}
                   className="category-card-img"
                   onError={handleImgError}
@@ -103,8 +83,8 @@ const CategoryPage = () => {
                 <div className="category-card-info">
                   <p className="category-card-title">{m.title}</p>
                   <p className="category-card-year">{m.year}</p>
-                  {m.imdbRating && m.imdbRating !== "N/A" && (
-                    <p className="category-card-rating">&#9733; {m.imdbRating}</p>
+                  {m.rating && m.rating !== "N/A" && (
+                    <p className="category-card-rating">&#9733; {m.rating}</p>
                   )}
                 </div>
               </Link>
@@ -121,7 +101,7 @@ const CategoryPage = () => {
           <div className="load-more-container">
             <button
               className="load-more-btn"
-              onClick={() => fetchBatch(loadedCount)}
+              onClick={() => fetchPage(page)}
               disabled={loading}
             >
               {loading ? "Loading..." : "Load More"}

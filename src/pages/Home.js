@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
@@ -7,7 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import CustomNavbar from "../components/Navbar";
 import MovieCarousel from "../components/MovieCarousel";
 import SearchBar from "../components/SearchBar";
-import { tollywoodMovies, bollywoodMovies, hollywoodMovies } from "../data/movieList";
+import { fetchTrendingMovies } from "../services/tmdbApi";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
 import StructuredData from "../components/StructuredData";
@@ -27,81 +27,33 @@ const Home = () => {
   const OMDB_API_KEY = process.env.REACT_APP_OMDB_API_KEY;
   useDocumentTitle("iBommaFlix - Discover Telugu, Hindi & English Movies");
 
-  // Fetch 5 random movies — fresh on every visit, cache individual movie data only
-  const fetchMoviesData = useCallback(async (movies) => {
-    try {
-      let validMovies = [];
-      let retries = 0;
-
-      while (validMovies.length < 5 && retries < 5) {
-        let uniqueMovies = new Set();
-        while (uniqueMovies.size < 5) {
-          uniqueMovies.add(movies[Math.floor(Math.random() * movies.length)]);
-        }
-
-        const selectedMovies = Array.from(uniqueMovies);
-        const movieRequests = selectedMovies.map(async (title) => {
-          // Cache individual movie responses to save API calls
-          const cacheKey = `movie_${title}`;
-          const cached = localStorage.getItem(cacheKey);
-          if (cached) {
-            try { return { data: JSON.parse(cached) }; } catch { /* fall through */ }
-          }
-          const res = await axios.get(`https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${OMDB_API_KEY}`);
-          if (res.data.Response === "True") {
-            localStorage.setItem(cacheKey, JSON.stringify(res.data));
-          }
-          return res;
-        });
-        const responses = await Promise.all(movieRequests);
-
-        validMovies = responses
-          .filter((res) => res.data.Response === "True" && res.data.Poster !== "N/A")
-          .map((res) => ({
-            title: res.data.Title,
-            year: res.data.Year,
-            poster: res.data.Poster,
-            imdbRating: res.data.imdbRating,
-          }));
-
-        retries++;
-      }
-
-      // Fill remaining slots with placeholder
-      while (validMovies.length < 5) {
-        validMovies.push({
-          title: "Coming Soon",
-          year: "N/A",
-          poster: posterPlaceholder,
-        });
-      }
-
-      return validMovies;
-    } catch {
-      return [];
-    }
-  }, [OMDB_API_KEY]);
-
+  // Fetch latest trending movies from TMDB
   useEffect(() => {
     const loadMovies = async () => {
       setLoading(true);
-      setTollywoodMoviesData(await fetchMoviesData(tollywoodMovies));
-      setBollywoodMoviesData(await fetchMoviesData(bollywoodMovies));
-      setHollywoodMoviesData(await fetchMoviesData(hollywoodMovies));
+      const [te, hi, en] = await Promise.all([
+        fetchTrendingMovies("tollywood"),
+        fetchTrendingMovies("bollywood"),
+        fetchTrendingMovies("hollywood"),
+      ]);
+      setTollywoodMoviesData(te.slice(0, 10));
+      setBollywoodMoviesData(hi.slice(0, 10));
+      setHollywoodMoviesData(en.slice(0, 10));
       setLoading(false);
     };
     loadMovies();
-  }, [fetchMoviesData]);
+  }, []);
 
   const getVerdict = (rating) => {
     if (!rating || rating === "N/A") return "Rating unavailable";
-    const imdbRating = parseFloat(rating);
-    if (imdbRating < 5) return "Not worth watching";
-    if (imdbRating <= 6.5) return "Average";
-    if (imdbRating <= 8) return "Good to watch";
+    const r = parseFloat(rating);
+    if (r < 5) return "Not worth watching";
+    if (r <= 6.5) return "Average";
+    if (r <= 8) return "Good to watch";
     return "Worth watching";
   };
 
+  // Search still uses OMDb for exact title lookup + IMDb rating
   const fetchMovie = async (searchTerm) => {
     if (!searchTerm) return;
     try {
@@ -114,7 +66,7 @@ const Home = () => {
         setVerdict(getVerdict(movieData.imdbRating));
         setIsModalOpen(true);
       } else {
-        const res = await axios.get(`https://www.omdbapi.com/?t=${searchTerm}&apikey=${OMDB_API_KEY}`);
+        const res = await axios.get(`https://www.omdbapi.com/?t=${encodeURIComponent(searchTerm)}&apikey=${OMDB_API_KEY}`);
         if (res.data.Response === "True") {
           const movieData = res.data;
           setMovie(movieData);
@@ -199,7 +151,7 @@ const Home = () => {
                 <div className="scroll-row">
                   {category.data.map((m, index) => (
                     <div
-                      key={index}
+                      key={m.id || index}
                       className="poster-card"
                       onClick={() => navigate(`/movie/${encodeURIComponent(m.title)}`)}
                       tabIndex={0}
@@ -228,7 +180,7 @@ const Home = () => {
         )}
       </div>
 
-      {/* Material-UI Movie Popup Modal */}
+      {/* Material-UI Movie Popup Modal — for search results */}
       <Modal
         open={isModalOpen}
         onClose={closeModal}
