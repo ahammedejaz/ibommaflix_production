@@ -6,6 +6,7 @@ import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
 import StructuredData from "../components/StructuredData";
 import useDocumentTitle from "../hooks/useDocumentTitle";
+import { searchMovieByTitle } from "../services/tmdbApi";
 import "./MovieDetails.css";
 
 const MovieDetails = () => {
@@ -27,15 +28,21 @@ const MovieDetails = () => {
 
   useEffect(() => {
     const fetchMovie = async () => {
+      setMovie(null);
+      setLoading(true);
+
+      // Try localStorage cache first
       const cacheKey = `movie_${title}`;
       const cachedData = localStorage.getItem(cacheKey);
-
       if (cachedData) {
-        setMovie(JSON.parse(cachedData));
-        setLoading(false);
-        return;
+        try {
+          setMovie(JSON.parse(cachedData));
+          setLoading(false);
+          return;
+        } catch { /* corrupted cache, continue */ }
       }
 
+      // Try OMDb first
       try {
         const res = await axios.get(
           `https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${OMDB_API_KEY}`
@@ -43,10 +50,20 @@ const MovieDetails = () => {
         if (res.data.Response === "True") {
           setMovie(res.data);
           localStorage.setItem(cacheKey, JSON.stringify(res.data));
+          setLoading(false);
+          return;
         }
       } catch {
-        // silently fail
+        // OMDb failed, try TMDB
       }
+
+      // Fallback to TMDB
+      const tmdbMovie = await searchMovieByTitle(title);
+      if (tmdbMovie) {
+        setMovie(tmdbMovie);
+        localStorage.setItem(cacheKey, JSON.stringify(tmdbMovie));
+      }
+
       setLoading(false);
     };
 
@@ -72,8 +89,12 @@ const MovieDetails = () => {
       <div>
         <CustomNavbar />
         <div className="movie-details-loading">
-          <p>Movie not found.</p>
-          <button className="back-btn" onClick={() => navigate(-1)}>Go Back</button>
+          <h2 style={{ color: "#FFD700", marginBottom: "10px" }}>Movie Not Found</h2>
+          <p style={{ color: "#999", marginBottom: "20px" }}>
+            Sorry, we couldn't find "{decodeURIComponent(title)}" in our database.
+            <br />Try searching with a different spelling or check the movie title.
+          </p>
+          <button className="back-btn" onClick={() => navigate(-1)}>&#8592; Go Back</button>
         </div>
       </div>
     );
@@ -103,7 +124,6 @@ const MovieDetails = () => {
       <StructuredData data={movieSchema} />
       <CustomNavbar />
       <div className="movie-details-container">
-        {/* Top bar — back button */}
         <button className="back-btn" onClick={() => navigate(-1)}>&#8592; Back</button>
 
         {/* Title section — full width like IMDb */}
@@ -141,7 +161,7 @@ const MovieDetails = () => {
                   <span className="rating-score">{movie.imdbRating}</span>
                   <span className="rating-out-of">/10</span>
                 </div>
-                <span className="rating-source">IMDb</span>
+                <span className="rating-source">{movie.source === "tmdb" ? "TMDB" : "IMDb"}</span>
               </div>
               <p className="movie-details-verdict">{getVerdict(movie.imdbRating)}</p>
             </div>
@@ -149,7 +169,7 @@ const MovieDetails = () => {
             {/* Plot */}
             <p className="movie-plot">{movie.Plot}</p>
 
-            {/* Details grid — IMDb style key-value pairs */}
+            {/* Details grid */}
             <div className="movie-info-grid">
               {movie.Director && movie.Director !== "N/A" && (
                 <div className="info-row">

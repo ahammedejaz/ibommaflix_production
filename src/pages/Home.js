@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
-import { Modal, Box, Typography, Button } from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CustomNavbar from "../components/Navbar";
 import MovieCarousel from "../components/MovieCarousel";
@@ -19,12 +17,8 @@ const Home = () => {
   const [bollywoodMoviesData, setBollywoodMoviesData] = useState([]);
   const [hollywoodMoviesData, setHollywoodMoviesData] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [movie, setMovie] = useState(null);
-  const [verdict, setVerdict] = useState("Fetching Verdict...");
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const OMDB_API_KEY = process.env.REACT_APP_OMDB_API_KEY;
   useDocumentTitle("iBommaFlix - Discover Telugu, Hindi & English Movies");
 
   // Fetch latest trending movies from TMDB
@@ -36,57 +30,18 @@ const Home = () => {
         fetchTrendingMovies("bollywood"),
         fetchTrendingMovies("hollywood"),
       ]);
-      setTollywoodMoviesData(te.slice(0, 10));
-      setBollywoodMoviesData(hi.slice(0, 10));
-      setHollywoodMoviesData(en.slice(0, 10));
+      setTollywoodMoviesData(te.slice(0, 6));
+      setBollywoodMoviesData(hi.slice(0, 6));
+      setHollywoodMoviesData(en.slice(0, 6));
       setLoading(false);
     };
     loadMovies();
   }, []);
 
-  const getVerdict = (rating) => {
-    if (!rating || rating === "N/A") return "Rating unavailable";
-    const r = parseFloat(rating);
-    if (r < 5) return "Not worth watching";
-    if (r <= 6.5) return "Average";
-    if (r <= 8) return "Good to watch";
-    return "Worth watching";
-  };
-
-  // Search still uses OMDb for exact title lookup + IMDb rating
-  const fetchMovie = async (searchTerm) => {
-    if (!searchTerm) return;
-    try {
-      const cacheKey = `movie_${searchTerm}`;
-      const cachedData = localStorage.getItem(cacheKey);
-
-      if (cachedData) {
-        const movieData = JSON.parse(cachedData);
-        setMovie(movieData);
-        setVerdict(getVerdict(movieData.imdbRating));
-        setIsModalOpen(true);
-      } else {
-        const res = await axios.get(`https://www.omdbapi.com/?t=${encodeURIComponent(searchTerm)}&apikey=${OMDB_API_KEY}`);
-        if (res.data.Response === "True") {
-          const movieData = res.data;
-          setMovie(movieData);
-          setVerdict(getVerdict(movieData.imdbRating));
-          localStorage.setItem(cacheKey, JSON.stringify(movieData));
-          setIsModalOpen(true);
-        } else {
-          alert("Movie not found!");
-        }
-      }
-    } catch {
-      alert("Error fetching movie data!");
-    }
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setMovie(null);
-    setVerdict("Fetching Verdict...");
-    setSearchInput("");
+  // Search navigates to movie details page
+  const fetchMovie = (searchTerm) => {
+    if (!searchTerm || !searchTerm.trim()) return;
+    navigate(`/movie/${encodeURIComponent(searchTerm.trim())}`);
   };
 
   const handleImgError = (e) => {
@@ -180,52 +135,6 @@ const Home = () => {
         )}
       </div>
 
-      {/* Material-UI Movie Popup Modal — for search results */}
-      <Modal
-        open={isModalOpen}
-        onClose={closeModal}
-        aria-labelledby="movie-modal-title"
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Box
-          className="modal-box"
-          sx={{
-            bgcolor: "black",
-            color: "white",
-            p: 3,
-            borderRadius: 2,
-            width: { xs: "90vw", sm: 450 },
-            maxWidth: "95vw",
-            textAlign: "center",
-          }}
-        >
-          <Typography id="movie-modal-title" variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
-            {movie?.Title} ({movie?.Year})
-          </Typography>
-          <img
-            src={movie?.Poster}
-            alt={movie?.Title}
-            className="movie-modal-img"
-            onError={handleImgError}
-          />
-          <Typography variant="body1" sx={{ mt: 2 }}><strong>Genre:</strong> {movie?.Genre}</Typography>
-          <Typography variant="body1"><strong>IMDb Rating:</strong> {movie?.imdbRating}</Typography>
-          <Typography variant="body1"><strong>Plot:</strong> {movie?.Plot}</Typography>
-          <Typography variant="h6" sx={{ color: "gold", mt: 2 }}>{verdict}</Typography>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={closeModal}
-            sx={{ mt: 2 }}
-          >
-            Close
-          </Button>
-        </Box>
-      </Modal>
     </div>
   );
 };

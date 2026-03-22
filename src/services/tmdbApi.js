@@ -80,4 +80,70 @@ export const fetchCarouselMovies = async () => {
   }
 };
 
+/**
+ * Fetch movie details from TMDB by ID
+ * @param {number} id - TMDB movie ID
+ * @returns {Object|null} - movie details or null
+ */
+export const fetchMovieById = async (id) => {
+  if (!TMDB_API_KEY) return null;
+
+  try {
+    const res = await axios.get(`${TMDB_BASE}/movie/${id}`, {
+      params: {
+        api_key: TMDB_API_KEY,
+        append_to_response: "credits",
+      },
+    });
+
+    const m = res.data;
+    const directors = m.credits?.crew?.filter((c) => c.job === "Director").map((c) => c.name).join(", ") || "N/A";
+    const actors = m.credits?.cast?.slice(0, 5).map((c) => c.name).join(", ") || "N/A";
+
+    return {
+      Title: m.title,
+      Year: m.release_date ? m.release_date.split("-")[0] : "N/A",
+      Rated: m.adult ? "R" : "PG-13",
+      Runtime: m.runtime ? `${m.runtime} min` : "N/A",
+      Genre: m.genres?.map((g) => g.name).join(", ") || "N/A",
+      Director: directors,
+      Actors: actors,
+      Plot: m.overview || "N/A",
+      Language: m.spoken_languages?.map((l) => l.english_name).join(", ") || "N/A",
+      Poster: m.poster_path ? `${TMDB_IMG}${m.poster_path}` : "N/A",
+      imdbRating: m.vote_average ? m.vote_average.toFixed(1) : "N/A",
+      Awards: "N/A",
+      source: "tmdb",
+    };
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Search TMDB by title
+ * @param {string} title - movie title to search
+ * @returns {Object|null} - movie details or null
+ */
+export const searchMovieByTitle = async (title) => {
+  if (!TMDB_API_KEY) return null;
+
+  try {
+    const res = await axios.get(`${TMDB_BASE}/search/movie`, {
+      params: {
+        api_key: TMDB_API_KEY,
+        query: title,
+      },
+    });
+
+    if (res.data.results && res.data.results.length > 0) {
+      const movieId = res.data.results[0].id;
+      return await fetchMovieById(movieId);
+    }
+    return null;
+  } catch {
+    return null;
+  }
+};
+
 export const TMDB_IMAGE_BASE = TMDB_IMG;
