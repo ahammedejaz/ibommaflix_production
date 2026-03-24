@@ -91,7 +91,7 @@ const CategoryPage = () => {
               {/* Ad after every 8 cards */}
               {(index + 1) % 8 === 0 && (
                 <div className="category-ad-slot">
-                  <AdBanner adSlot="5566778899" />
+                  <AdBanner adSlot="5304494924" />
                 </div>
               )}
             </React.Fragment>

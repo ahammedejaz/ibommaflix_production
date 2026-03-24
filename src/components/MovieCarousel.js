@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Carousel } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./MovieCarousel.css";
-import { fetchCarouselMovies } from "../services/tmdbApi";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 
 const getPostersPerSlide = () => {
@@ -13,8 +12,7 @@ const getPostersPerSlide = () => {
   return 6;
 };
 
-const MovieCarousel = () => {
-  const [moviePosters, setMoviePosters] = useState([]);
+const MovieCarousel = ({ movies = [], loading = false }) => {
   const [postersPerSlide, setPostersPerSlide] = useState(getPostersPerSlide);
   const navigate = useNavigate();
 
@@ -27,17 +25,9 @@ const MovieCarousel = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [handleResize]);
 
-  useEffect(() => {
-    const loadPosters = async () => {
-      const movies = await fetchCarouselMovies();
-      setMoviePosters(movies);
-    };
-    loadPosters();
-  }, []);
-
   const chunkedPosters = [];
-  for (let i = 0; i < moviePosters.length; i += postersPerSlide) {
-    const chunk = moviePosters.slice(i, i + postersPerSlide);
+  for (let i = 0; i < movies.length; i += postersPerSlide) {
+    const chunk = movies.slice(i, i + postersPerSlide);
     if (chunk.length === postersPerSlide) {
       chunkedPosters.push(chunk);
     }
@@ -71,8 +61,10 @@ const MovieCarousel = () => {
                   </Carousel.Item>
               ))}
             </Carousel>
-        ) : (
+        ) : loading ? (
             <p className="loading-text">Loading posters...</p>
+        ) : (
+            <p className="loading-text">No posters available</p>
         )}
       </div>
   );

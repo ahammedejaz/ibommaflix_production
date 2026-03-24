@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import AdBlockDetector from "./components/AdBlockDetector";
 
 const MovieDetails = React.lazy(() => import("./pages/MovieDetails"));
 const CategoryPage = React.lazy(() => import("./pages/CategoryPage"));
@@ -30,25 +31,27 @@ const LazyFallback = () => (
 
 const App = () => {
   return (
-    <Router>
-      <ScrollToTop />
-      <div className="app-container">
-        <Suspense fallback={<LazyFallback />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/movie/:title" element={<MovieDetails />} />
-            <Route path="/category/:type" element={<CategoryPage />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-of-service" element={<TermsOfService />} />
-            <Route path="/disclaimer" element={<Disclaimer />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-        <Footer />
-      </div>
-    </Router>
+    <AdBlockDetector>
+      <Router>
+        <ScrollToTop />
+        <div className="app-container">
+          <Suspense fallback={<LazyFallback />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/movie/:title" element={<MovieDetails />} />
+              <Route path="/category/:type" element={<CategoryPage />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/disclaimer" element={<Disclaimer />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+          <Footer />
+        </div>
+      </Router>
+    </AdBlockDetector>
   );
 };
 

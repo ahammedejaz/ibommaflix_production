@@ -1,0 +1,110 @@
+.adblock-wall {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  padding: 20px;
+}
+
+.adblock-modal {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.adblock-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.adblock-title {
+  color: #FFD700;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.adblock-message {
+  color: #ccc;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.adblock-message strong {
+  color: #FFD700;
+}
+
+.adblock-steps {
+  background: #111;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.adblock-steps-title {
+  color: #FFD700;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.adblock-steps ol {
+  color: #aaa;
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.adblock-btn {
+  background: #FFD700;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.adblock-btn:hover {
+  background: #e6c200;
+}
+
+.adblock-footer {
+  color: #666;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .adblock-modal {
+    padding: 28px 20px;
+  }
+
+  .adblock-title {
+    font-size: 20px;
+  }
+
+  .adblock-message {
+    font-size: 14px;
+  }
+}

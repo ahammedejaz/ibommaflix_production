@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import CustomNavbar from "../components/Navbar";
 import MovieCarousel from "../components/MovieCarousel";
 import SearchBar from "../components/SearchBar";
-import { fetchTrendingMovies } from "../services/tmdbApi";
+import { fetchTrendingMovies, buildCarouselMovies } from "../services/tmdbApi";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
 import StructuredData from "../components/StructuredData";
@@ -16,24 +16,33 @@ const Home = () => {
   const [tollywoodMoviesData, setTollywoodMoviesData] = useState([]);
   const [bollywoodMoviesData, setBollywoodMoviesData] = useState([]);
   const [hollywoodMoviesData, setHollywoodMoviesData] = useState([]);
+  const [carouselMovies, setCarouselMovies] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
   useDocumentTitle("iBommaFlix - Discover Telugu, Hindi & English Movies");
 
-  // Fetch latest trending movies from TMDB
+  // Fetch latest trending movies from TMDB (single fetch shared with carousel)
   useEffect(() => {
     const loadMovies = async () => {
       setLoading(true);
-      const [te, hi, en] = await Promise.all([
-        fetchTrendingMovies("tollywood"),
-        fetchTrendingMovies("bollywood"),
-        fetchTrendingMovies("hollywood"),
-      ]);
-      setTollywoodMoviesData(te.slice(0, 6));
-      setBollywoodMoviesData(hi.slice(0, 6));
-      setHollywoodMoviesData(en.slice(0, 6));
-      setLoading(false);
+      setError(false);
+      try {
+        const [te, hi, en] = await Promise.all([
+          fetchTrendingMovies("tollywood"),
+          fetchTrendingMovies("bollywood"),
+          fetchTrendingMovies("hollywood"),
+        ]);
+        setTollywoodMoviesData(te.slice(0, 6));
+        setBollywoodMoviesData(hi.slice(0, 6));
+        setHollywoodMoviesData(en.slice(0, 6));
+        setCarouselMovies(buildCarouselMovies(te, hi, en));
+      } catch {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
     };
     loadMovies();
   }, []);
@@ -73,10 +82,10 @@ const Home = () => {
       <StructuredData data={websiteSchema} />
       <h1 className="sr-only">iBommaFlix - Discover Movies</h1>
       <CustomNavbar />
-      <MovieCarousel />
+      <MovieCarousel movies={carouselMovies} loading={loading} />
 
       {/* Ad — below hero carousel */}
-      <AdBanner adSlot="1234567890" />
+      <AdBanner adSlot="2271270920" />
 
       {/* Search Bar */}
       <Container className="mt-3 text-center">
@@ -97,6 +106,10 @@ const Home = () => {
           <div className="loading-container">
             <div className="loading-spinner"></div>
             <p className="loading-movies-text">Loading movies...</p>
+          </div>
+        ) : error ? (
+          <div className="loading-container">
+            <p className="loading-movies-text">Unable to load movies. Please check your connection and refresh.</p>
           </div>
         ) : (
           categories.map((category, i) => (
@@ -129,7 +142,7 @@ const Home = () => {
                 </div>
               </div>
               {/* Ad — between Bollywood and Hollywood sections */}
-              {i === 1 && <AdBanner adSlot="0987654321" />}
+              {i === 1 && <AdBanner adSlot="4458450563" />}
             </React.Fragment>
           ))
         )}

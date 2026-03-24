@@ -42,10 +42,11 @@ const MovieDetails = () => {
         } catch { /* corrupted cache, continue */ }
       }
 
-      // Try OMDb first
+      // Try OMDb first (more reliable, works across regions)
       try {
         const res = await axios.get(
-          `https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${OMDB_API_KEY}`
+          `https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${OMDB_API_KEY}`,
+          { timeout: 8000 }
         );
         if (res.data.Response === "True") {
           setMovie(res.data);
@@ -199,7 +200,7 @@ const MovieDetails = () => {
           </div>
         </div>
 
-        <AdBanner adSlot="1122334455" />
+        <AdBanner adSlot="6617576595" />
       </div>
     </div>
   );
