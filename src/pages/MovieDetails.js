@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import axios from "axios";
 import CustomNavbar from "../components/Navbar";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
 import StructuredData from "../components/StructuredData";
 import useDocumentTitle from "../hooks/useDocumentTitle";
-import { searchMovieByTitle } from "../services/tmdbApi";
+import { searchMovieByTitle, fetchMovieTrailers, fetchSimilarMovies, getTmdbMovieId } from "../services/tmdbApi";
 import "./MovieDetails.css";
 
 const MovieDetails = () => {
@@ -14,6 +15,9 @@ const MovieDetails = () => {
   const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [trailers, setTrailers] = useState([]);
+  const [similarMovies, setSimilarMovies] = useState([]);
+  const [activeTrailer, setActiveTrailer] = useState(null);
   const OMDB_API_KEY = process.env.REACT_APP_OMDB_API_KEY;
   useDocumentTitle(movie ? `${movie.Title} (${movie.Year}) - iBommaFlix` : "Loading... - iBommaFlix");
 
@@ -30,6 +34,9 @@ const MovieDetails = () => {
     const fetchMovie = async () => {
       setMovie(null);
       setLoading(true);
+      setTrailers([]);
+      setSimilarMovies([]);
+      setActiveTrailer(null);
 
       // Try localStorage cache first
       const cacheKey = `movie_${title}`;
@@ -71,6 +78,37 @@ const MovieDetails = () => {
     fetchMovie();
   }, [title, OMDB_API_KEY]);
 
+  // Fetch trailers and similar movies after movie loads
+  useEffect(() => {
+    if (!movie || !movie.Title) return;
+
+    const fetchExtras = async () => {
+      try {
+        let tmdbId = movie.source === "tmdb" ? movie.id : null;
+        if (!tmdbId) {
+          tmdbId = await getTmdbMovieId(movie.Title);
+        }
+
+        if (tmdbId) {
+          const [trailersData, similarData] = await Promise.all([
+            fetchMovieTrailers(tmdbId),
+            fetchSimilarMovies(tmdbId),
+          ]);
+
+          setTrailers(trailersData);
+          if (trailersData.length > 0) {
+            setActiveTrailer(trailersData[0]);
+          }
+          setSimilarMovies(similarData);
+        }
+      } catch {
+        // Trailers and similar movies are non-critical
+      }
+    };
+
+    fetchExtras();
+  }, [movie]);
+
   const handleImgError = (e) => {
     e.target.onerror = null;
     e.target.src = posterPlaceholder;
@@ -88,6 +126,10 @@ const MovieDetails = () => {
   if (!movie) {
     return (
       <div>
+        <Helmet>
+          <title>Movie Not Found - iBommaFlix</title>
+          <meta name="robots" content="noindex" />
+        </Helmet>
         <CustomNavbar />
         <div className="movie-details-loading">
           <h2 style={{ color: "#FFD700", marginBottom: "10px" }}>Movie Not Found</h2>
@@ -100,6 +142,10 @@ const MovieDetails = () => {
       </div>
     );
   }
+
+  const pageTitle = `${movie.Title} (${movie.Year}) - Rating & Review | iBommaFlix`;
+  const pageDesc = `${movie.Title} - IMDb Rating: ${movie.imdbRating || "N/A"}. ${movie.Plot ? movie.Plot.substring(0, 150) : "Discover ratings, cast, and plot details on iBommaFlix."}`;
+  const canonicalUrl = `https://ibommaflix.com/movie/${encodeURIComponent(title)}`;
 
   const movieSchema = {
     "@context": "https://schema.org",
@@ -122,6 +168,22 @@ const MovieDetails = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDesc} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:type" content="video.movie" />
+        <meta property="og:site_name" content="iBommaFlix" />
+        {movie.Poster && movie.Poster !== "N/A" && (
+          <meta property="og:image" content={movie.Poster} />
+        )}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDesc} />
+      </Helmet>
       <StructuredData data={movieSchema} />
       <CustomNavbar />
       <div className="movie-details-container">
@@ -142,7 +204,7 @@ const MovieDetails = () => {
           <div className="movie-details-poster">
             <img
               src={movie.Poster !== "N/A" ? movie.Poster : posterPlaceholder}
-              alt={movie.Title}
+              alt={`${movie.Title} movie poster`}
               onError={handleImgError}
             />
           </div>
@@ -201,6 +263,66 @@ const MovieDetails = () => {
         </div>
 
         <AdBanner adSlot="6617576595" />
+
+        {/* Trailer Section */}
+        {activeTrailer && (
+          <div className="trailer-section">
+            <h2 className="section-title">Watch Trailer</h2>
+            <div className="trailer-container">
+              <iframe
+                className="trailer-iframe"
+                src={`https://www.youtube.com/embed/${activeTrailer.key}?rel=0&modestbranding=1`}
+                title={`${movie.Title} - ${activeTrailer.name}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            {trailers.length > 1 && (
+              <div className="trailer-tabs">
+                {trailers.slice(0, 4).map((trailer) => (
+                  <button
+                    key={trailer.key}
+                    className={`trailer-tab ${activeTrailer.key === trailer.key ? "active" : ""}`}
+                    onClick={() => setActiveTrailer(trailer)}
+                  >
+                    {trailer.type}: {trailer.name.length > 30 ? trailer.name.substring(0, 30) + "..." : trailer.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Similar Movies Section */}
+        {similarMovies.length > 0 && (
+          <div className="similar-movies-section">
+            <h2 className="section-title">Similar Movies You Might Like</h2>
+            <div className="similar-movies-grid">
+              {similarMovies.map((m) => (
+                <div
+                  key={m.id}
+                  className="similar-movie-card"
+                  onClick={() => navigate(`/movie/${encodeURIComponent(m.title)}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <img
+                    src={m.poster}
+                    alt={`${m.title} poster`}
+                    className="similar-movie-poster"
+                    loading="lazy"
+                  />
+                  <div className="similar-movie-info">
+                    <p className="similar-movie-title">{m.title}</p>
+                    <div className="similar-movie-meta">
+                      {m.year && <span>{m.year}</span>}
+                      {m.rating !== "N/A" && <span className="similar-movie-rating">&#9733; {m.rating}</span>}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

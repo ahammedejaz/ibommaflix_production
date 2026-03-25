@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CustomNavbar from "../components/Navbar";
 import MovieCarousel from "../components/MovieCarousel";
 import SearchBar from "../components/SearchBar";
+import SkeletonCard from "../components/SkeletonCard";
 import { fetchTrendingMovies, buildCarouselMovies } from "../services/tmdbApi";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
@@ -79,6 +81,19 @@ const Home = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>iBommaFlix - Watch Telugu, Hindi &amp; English Movies | Ratings &amp; Reviews</title>
+        <meta name="description" content="Discover trending Tollywood, Bollywood and Hollywood movies. Get IMDb ratings, plot summaries, cast details and expert verdicts on iBommaFlix." />
+        <link rel="canonical" href="https://ibommaflix.com/" />
+        <meta property="og:title" content="iBommaFlix - Watch Telugu, Hindi & English Movies | Ratings & Reviews" />
+        <meta property="og:description" content="Discover trending Tollywood, Bollywood and Hollywood movies. Get IMDb ratings, plot summaries, cast details and expert verdicts on iBommaFlix." />
+        <meta property="og:url" content="https://ibommaflix.com/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="iBommaFlix" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="iBommaFlix - Watch Telugu, Hindi & English Movies" />
+        <meta name="twitter:description" content="Discover trending Tollywood, Bollywood and Hollywood movies with ratings and reviews." />
+      </Helmet>
       <StructuredData data={websiteSchema} />
       <h1 className="sr-only">iBommaFlix - Discover Movies</h1>
       <CustomNavbar />
@@ -103,10 +118,14 @@ const Home = () => {
       {/* Movie Sections — Netflix-style horizontal scroll */}
       <div className="movie-sections">
         {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p className="loading-movies-text">Loading movies...</p>
-          </div>
+          <>
+            {["Trending in Tollywood", "Trending in Bollywood", "Trending in Hollywood"].map((cat, i) => (
+              <div key={i} className="movie-category">
+                <h2 className="category-title">{cat}</h2>
+                <SkeletonCard count={6} layout="horizontal" />
+              </div>
+            ))}
+          </>
         ) : error ? (
           <div className="loading-container">
             <p className="loading-movies-text">Unable to load movies. Please check your connection and refresh.</p>

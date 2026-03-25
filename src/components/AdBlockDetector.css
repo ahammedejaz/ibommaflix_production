@@ -1,110 +1,121 @@
-.adblock-wall {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.95);
+/* Ad Blocker Loading */
+.adblocker-loading {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  z-index: 99999;
-  padding: 20px;
+  justify-content: center;
+  min-height: 100vh;
+  background: #000;
+  color: #FFD700;
+  font-family: 'Poppins', sans-serif;
 }
 
-.adblock-modal {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 16px;
-  padding: 40px;
-  max-width: 480px;
-  width: 100%;
-  text-align: center;
-  font-family: "Poppins", sans-serif;
-}
-
-.adblock-icon {
-  font-size: 48px;
+.adblocker-loading .loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #333;
+  border-top: 3px solid #FFD700;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
   margin-bottom: 16px;
 }
 
-.adblock-title {
-  color: #FFD700;
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 12px;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.adblock-message {
+/* Non-blocking bottom banner */
+.adblocker-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border-top: 2px solid #FFD700;
+  padding: 14px 20px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.adblocker-banner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.adblocker-banner-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adblocker-banner-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.adblocker-banner-title {
+  color: #FFD700;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.adblocker-banner-desc {
   color: #ccc;
-  font-size: 15px;
-  line-height: 1.6;
-  margin-bottom: 24px;
+  font-size: 0.8rem;
+  margin: 2px 0 0;
+  font-family: 'Poppins', sans-serif;
 }
 
-.adblock-message strong {
-  color: #FFD700;
-}
-
-.adblock-steps {
-  background: #111;
-  border-radius: 10px;
-  padding: 16px 20px;
-  margin-bottom: 24px;
-  text-align: left;
-}
-
-.adblock-steps-title {
-  color: #FFD700;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.adblock-steps ol {
-  color: #aaa;
-  font-size: 13px;
-  line-height: 1.8;
-  margin: 0;
-  padding-left: 20px;
-}
-
-.adblock-btn {
-  background: #FFD700;
-  color: #000;
-  border: none;
-  border-radius: 8px;
-  padding: 14px 32px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: "Poppins", sans-serif;
+.adblocker-banner-close {
+  background: none;
+  border: 1px solid #555;
+  color: #999;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   cursor: pointer;
-  transition: background 0.2s;
-  width: 100%;
-  margin-bottom: 16px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
-.adblock-btn:hover {
-  background: #e6c200;
+.adblocker-banner-close:hover {
+  border-color: #FFD700;
+  color: #FFD700;
+  background: rgba(255, 215, 0, 0.1);
 }
 
-.adblock-footer {
-  color: #666;
-  font-size: 12px;
-  line-height: 1.5;
-  margin: 0;
-}
-
-@media (max-width: 480px) {
-  .adblock-modal {
-    padding: 28px 20px;
+@media (max-width: 768px) {
+  .adblocker-banner {
+    padding: 12px 16px;
   }
 
-  .adblock-title {
-    font-size: 20px;
+  .adblocker-banner-icon {
+    display: none;
   }
 
-  .adblock-message {
-    font-size: 14px;
+  .adblocker-banner-desc {
+    font-size: 0.75rem;
   }
 }

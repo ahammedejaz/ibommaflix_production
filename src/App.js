@@ -31,8 +31,8 @@ const LazyFallback = () => (
 
 const App = () => {
   return (
-    <AdBlockDetector>
-      <Router>
+    <Router>
+      <AdBlockDetector>
         <ScrollToTop />
         <div className="app-container">
           <Suspense fallback={<LazyFallback />}>
@@ -50,8 +50,8 @@ const App = () => {
           </Suspense>
           <Footer />
         </div>
-      </Router>
-    </AdBlockDetector>
+      </AdBlockDetector>
+    </Router>
   );
 };
 

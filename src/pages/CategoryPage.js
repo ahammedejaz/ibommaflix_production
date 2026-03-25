@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import CustomNavbar from "../components/Navbar";
+import SkeletonCard from "../components/SkeletonCard";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
 import { fetchTrendingMovies } from "../services/tmdbApi";
@@ -64,11 +66,31 @@ const CategoryPage = () => {
     );
   }
 
+  const pageTitle = `${label} Movies - Latest & Trending | iBommaFlix`;
+  const pageDesc = `Browse the latest and trending ${label} movies. Discover ratings, reviews and recommendations on iBommaFlix.`;
+  const canonicalUrl = `https://ibommaflix.com/category/${type}`;
+
   return (
     <div>
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDesc} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="iBommaFlix" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDesc} />
+      </Helmet>
       <CustomNavbar />
       <div className="category-container">
         <h1 className="category-page-title">{label} Movies</h1>
+        {movies.length === 0 && loading ? (
+          <SkeletonCard count={8} layout="grid" />
+        ) : null}
         <div className="category-grid">
           {movies.map((m, index) => (
             <React.Fragment key={m.id || index}>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import CustomNavbar from "../components/Navbar";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./About.css";
@@ -7,6 +8,19 @@ const About = () => {
   useDocumentTitle("About - iBommaFlix");
   return (
     <div>
+      <Helmet>
+        <title>About iBommaFlix - Your Movie Discovery Platform</title>
+        <meta name="description" content="Learn about iBommaFlix - your ultimate destination for discovering Telugu, Hindi and English movies with ratings, reviews and recommendations." />
+        <link rel="canonical" href="https://ibommaflix.com/about" />
+        <meta property="og:title" content="About iBommaFlix - Your Movie Discovery Platform" />
+        <meta property="og:description" content="Learn about iBommaFlix - your ultimate destination for discovering Telugu, Hindi and English movies with ratings, reviews and recommendations." />
+        <meta property="og:url" content="https://ibommaflix.com/about" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="iBommaFlix" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="About iBommaFlix" />
+        <meta name="twitter:description" content="Your ultimate destination for discovering Telugu, Hindi and English movies." />
+      </Helmet>
       <CustomNavbar />
       <div className="about-container">
         <h1 className="about-title">About iBommaFlix</h1>

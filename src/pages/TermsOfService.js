@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import CustomNavbar from "../components/Navbar";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./Legal.css";
@@ -7,6 +8,16 @@ const TermsOfService = () => {
   useDocumentTitle("Terms of Service - iBommaFlix");
   return (
     <div>
+      <Helmet>
+        <title>Terms of Service - iBommaFlix</title>
+        <meta name="description" content="Read the terms of service for using iBommaFlix movie discovery platform." />
+        <link rel="canonical" href="https://ibommaflix.com/terms-of-service" />
+        <meta property="og:title" content="Terms of Service - iBommaFlix" />
+        <meta property="og:description" content="Read the terms of service for using iBommaFlix." />
+        <meta property="og:url" content="https://ibommaflix.com/terms-of-service" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="iBommaFlix" />
+      </Helmet>
       <CustomNavbar />
       <div className="legal-container">
         <h1 className="legal-title">Terms of Service</h1>

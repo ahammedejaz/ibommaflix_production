@@ -215,4 +215,100 @@ export const searchMovieByTitle = async (title) => {
   }
 };
 
+/**
+ * Fetch movie trailers/videos from TMDB
+ * @param {number} movieId - TMDB movie ID
+ * @returns {Array} - array of trailer objects with YouTube keys
+ */
+export const fetchMovieTrailers = async (movieId) => {
+  if (!TMDB_API_KEY || !movieId) return [];
+
+  try {
+    const response = await axios.get(
+      `${TMDB_BASE}/movie/${movieId}/videos`,
+      {
+        params: { api_key: TMDB_API_KEY, language: "en-US" },
+        timeout: TMDB_TIMEOUT,
+      }
+    );
+
+    if (response.data && response.data.results) {
+      return response.data.results
+        .filter((v) => v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser"))
+        .sort((a, b) => {
+          if (a.type === "Trailer" && b.type !== "Trailer") return -1;
+          if (a.official && !b.official) return -1;
+          return 0;
+        });
+    }
+    return [];
+  } catch (error) {
+    console.warn("Failed to fetch trailers:", error.message);
+    return [];
+  }
+};
+
+/**
+ * Fetch similar movies from TMDB
+ * @param {number} movieId - TMDB movie ID
+ * @returns {Array} - array of similar movie objects
+ */
+export const fetchSimilarMovies = async (movieId) => {
+  if (!TMDB_API_KEY || !movieId) return [];
+
+  try {
+    const response = await axios.get(
+      `${TMDB_BASE}/movie/${movieId}/similar`,
+      {
+        params: { api_key: TMDB_API_KEY, language: "en-US", page: 1 },
+        timeout: TMDB_TIMEOUT,
+      }
+    );
+
+    if (response.data && response.data.results) {
+      return response.data.results
+        .filter((m) => m.poster_path)
+        .slice(0, 12)
+        .map((m) => ({
+          id: m.id,
+          title: m.title,
+          year: m.release_date ? m.release_date.split("-")[0] : "",
+          poster: `${TMDB_IMG}${m.poster_path}`,
+          rating: m.vote_average ? m.vote_average.toFixed(1) : "N/A",
+          overview: m.overview,
+        }));
+    }
+    return [];
+  } catch (error) {
+    console.warn("Failed to fetch similar movies:", error.message);
+    return [];
+  }
+};
+
+/**
+ * Search TMDB and return movie ID for use with trailers/similar
+ * @param {string} title - movie title to search
+ * @returns {number|null} - TMDB movie ID or null
+ */
+export const getTmdbMovieId = async (title) => {
+  if (!TMDB_API_KEY) return null;
+
+  try {
+    const response = await axios.get(
+      `${TMDB_BASE}/search/movie`,
+      {
+        params: { api_key: TMDB_API_KEY, query: title, language: "en-US" },
+        timeout: TMDB_TIMEOUT,
+      }
+    );
+
+    if (response.data && response.data.results && response.data.results.length > 0) {
+      return response.data.results[0].id;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+};
+
 export const TMDB_IMAGE_BASE = TMDB_IMG;

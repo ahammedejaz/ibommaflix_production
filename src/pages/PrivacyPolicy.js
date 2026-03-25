@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import CustomNavbar from "../components/Navbar";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./Legal.css";
@@ -7,6 +8,16 @@ const PrivacyPolicy = () => {
   useDocumentTitle("Privacy Policy - iBommaFlix");
   return (
     <div>
+      <Helmet>
+        <title>Privacy Policy - iBommaFlix</title>
+        <meta name="description" content="Read iBommaFlix's privacy policy. Learn how we collect, use, and protect your personal information." />
+        <link rel="canonical" href="https://ibommaflix.com/privacy-policy" />
+        <meta property="og:title" content="Privacy Policy - iBommaFlix" />
+        <meta property="og:description" content="Read iBommaFlix's privacy policy." />
+        <meta property="og:url" content="https://ibommaflix.com/privacy-policy" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="iBommaFlix" />
+      </Helmet>
       <CustomNavbar />
       <div className="legal-container">
         <h1 className="legal-title">Privacy Policy</h1>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import CustomNavbar from "../components/Navbar";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./Contact.css";
@@ -22,6 +23,19 @@ const Contact = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Contact Us - iBommaFlix</title>
+        <meta name="description" content="Get in touch with the iBommaFlix team. We'd love to hear your feedback, suggestions, and movie recommendations." />
+        <link rel="canonical" href="https://ibommaflix.com/contact" />
+        <meta property="og:title" content="Contact Us - iBommaFlix" />
+        <meta property="og:description" content="Get in touch with the iBommaFlix team. We'd love to hear your feedback, suggestions, and movie recommendations." />
+        <meta property="og:url" content="https://ibommaflix.com/contact" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="iBommaFlix" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Contact Us - iBommaFlix" />
+        <meta name="twitter:description" content="Get in touch with the iBommaFlix team." />
+      </Helmet>
       <CustomNavbar />
       <div className="contact-page-container">
         <h1 className="contact-page-title">Contact Us</h1>
