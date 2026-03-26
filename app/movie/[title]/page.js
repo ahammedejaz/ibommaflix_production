@@ -110,7 +110,7 @@ export default async function MoviePage({ params }) {
 
       {/* Server-rendered movie summary for crawlers — shows before JS hydrates */}
       {movieData && (
-        <div className="sr-only" aria-hidden="true">
+        <div className="sr-only">
           <h1>{movieData.Title} ({movieData.Year}) - {getVerdict(movieData.imdbRating)}</h1>
           <p>IMDb Rating: {movieData.imdbRating}/10{movieData.imdbVotes ? ` (${movieData.imdbVotes} votes)` : ""}</p>
           {movieData.Plot && movieData.Plot !== "N/A" && <p>{movieData.Plot}</p>}
