@@ -7,6 +7,8 @@ import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
 import { fetchTrendingMovies } from "../services/tmdbApi";
 import useDocumentTitle from "../hooks/useDocumentTitle";
+import BreadcrumbSchema from "../components/BreadcrumbSchema";
+import MovieListSchema from "../components/MovieListSchema";
 import "./CategoryPage.css";
 
 const categoryLabels = {
@@ -85,6 +87,15 @@ const CategoryPage = () => {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDesc} />
       </Helmet>
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://ibommaflix.com/" },
+        { name: `${label} Movies`, url: canonicalUrl }
+      ]} />
+      <MovieListSchema
+        movies={movies}
+        categoryName={label}
+        categoryUrl={canonicalUrl}
+      />
       <CustomNavbar />
       <div className="category-container">
         <h1 className="category-page-title">{label} Movies</h1>
@@ -101,6 +112,8 @@ const CategoryPage = () => {
                   className="category-card-img"
                   onError={handleImgError}
                   loading="lazy"
+                  width={180}
+                  height={270}
                 />
                 <div className="category-card-info">
                   <p className="category-card-title">{m.title}</p>

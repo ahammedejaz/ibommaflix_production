@@ -18,7 +18,7 @@ const Footer = () => {
         <Link to="/terms-of-service">Terms of Service</Link>
         <Link to="/disclaimer">Disclaimer</Link>
       </div>
-      <p>&copy; 2025 🎬iBommaFlix. All Rights Reserved.</p>
+      <p>&copy; 2026 🎬iBommaFlix. All Rights Reserved.</p>
       <p className="footer-credit">Powered by <a href="https://www.omdbapi.com/" target="_blank" rel="noopener noreferrer">OMDb API</a></p>
     </footer>
   );

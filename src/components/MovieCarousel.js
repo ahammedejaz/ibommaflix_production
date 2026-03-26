@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Carousel } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "./MovieCarousel.css";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 
@@ -55,6 +54,9 @@ const MovieCarousel = ({ movies = [], loading = false }) => {
                             onClick={() => navigate(`/movie/${encodeURIComponent(movieItem.title)}`)}
                             onError={handleImgError}
                             loading={index > 0 ? "lazy" : undefined}
+                            fetchPriority={index === 0 ? "high" : undefined}
+                            width={170}
+                            height={260}
                           />
                       ))}
                     </div>

@@ -8,6 +8,7 @@ import AdBanner from "../components/AdBanner";
 import StructuredData from "../components/StructuredData";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { searchMovieByTitle, fetchMovieTrailers, fetchSimilarMovies, getTmdbMovieId } from "../services/tmdbApi";
+import BreadcrumbSchema from "../components/BreadcrumbSchema";
 import "./MovieDetails.css";
 
 const MovieDetails = () => {
@@ -151,17 +152,24 @@ const MovieDetails = () => {
     "@context": "https://schema.org",
     "@type": "Movie",
     "name": movie.Title,
-    "image": movie.Poster,
+    "url": canonicalUrl,
+    "image": movie.Poster && movie.Poster !== "N/A" ? movie.Poster : undefined,
     "datePublished": movie.Year,
-    "director": { "@type": "Person", "name": movie.Director },
-    "genre": movie.Genre,
-    "description": movie.Plot,
+    "description": movie.Plot && movie.Plot !== "N/A" ? movie.Plot : undefined,
+    "genre": movie.Genre && movie.Genre !== "N/A" ? movie.Genre.split(",").map(g => g.trim()) : undefined,
+    "director": movie.Director && movie.Director !== "N/A"
+      ? movie.Director.split(",").map(d => ({ "@type": "Person", "name": d.trim() }))
+      : undefined,
+    "actor": movie.Actors && movie.Actors !== "N/A"
+      ? movie.Actors.split(",").map(a => ({ "@type": "Person", "name": a.trim() }))
+      : undefined,
     ...(movie.imdbRating && movie.imdbRating !== "N/A" ? {
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": movie.imdbRating,
         "bestRating": "10",
-        "worstRating": "1"
+        "worstRating": "1",
+        "ratingCount": movie.imdbVotes ? movie.imdbVotes.replace(/,/g, "") : "1000"
       }
     } : {})
   };
@@ -185,6 +193,11 @@ const MovieDetails = () => {
         <meta name="twitter:description" content={pageDesc} />
       </Helmet>
       <StructuredData data={movieSchema} />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://ibommaflix.com/" },
+        { name: "Movies", url: "https://ibommaflix.com/" },
+        { name: movie.Title, url: canonicalUrl }
+      ]} />
       <CustomNavbar />
       <div className="movie-details-container">
         <button className="back-btn" onClick={() => navigate(-1)}>&#8592; Back</button>
@@ -206,6 +219,8 @@ const MovieDetails = () => {
               src={movie.Poster !== "N/A" ? movie.Poster : posterPlaceholder}
               alt={`${movie.Title} movie poster`}
               onError={handleImgError}
+              width={300}
+              height={450}
             />
           </div>
           <div className="movie-details-info">
@@ -310,6 +325,8 @@ const MovieDetails = () => {
                     alt={`${m.title} poster`}
                     className="similar-movie-poster"
                     loading="lazy"
+                    width={150}
+                    height={225}
                   />
                   <div className="similar-movie-info">
                     <p className="similar-movie-title">{m.title}</p>

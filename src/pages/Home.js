@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Container } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
+
 import CustomNavbar from "../components/Navbar";
 import MovieCarousel from "../components/MovieCarousel";
 import SearchBar from "../components/SearchBar";
@@ -74,27 +74,42 @@ const Home = () => {
     "description": "Movie discovery and rating aggregation platform for Telugu, Hindi, and English movies",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://ibommaflix.com/?search={search_term_string}",
+      "target": "https://ibommaflix.com/movie/{search_term_string}",
       "query-input": "required name=search_term_string"
+    }
+  };
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "iBommaFlix",
+    "url": "https://ibommaflix.com",
+    "logo": "https://ibommaflix.com/logo512.png",
+    "description": "Movie discovery and rating aggregation platform for Telugu, Hindi, and English movies",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "url": "https://ibommaflix.com/contact"
     }
   };
 
   return (
     <div>
       <Helmet>
-        <title>iBommaFlix - Watch Telugu, Hindi &amp; English Movies | Ratings &amp; Reviews</title>
-        <meta name="description" content="Discover trending Tollywood, Bollywood and Hollywood movies. Get IMDb ratings, plot summaries, cast details and expert verdicts on iBommaFlix." />
+        <title>iBommaFlix - Discover Telugu, Hindi &amp; English Movies | Ratings &amp; Reviews</title>
+        <meta name="description" content="Discover trending Tollywood, Bollywood and Hollywood movies. Get IMDb ratings, plot summaries, cast details and watchability verdicts on iBommaFlix." />
         <link rel="canonical" href="https://ibommaflix.com/" />
-        <meta property="og:title" content="iBommaFlix - Watch Telugu, Hindi & English Movies | Ratings & Reviews" />
-        <meta property="og:description" content="Discover trending Tollywood, Bollywood and Hollywood movies. Get IMDb ratings, plot summaries, cast details and expert verdicts on iBommaFlix." />
+        <meta property="og:title" content="iBommaFlix - Discover Telugu, Hindi & English Movies | Ratings & Reviews" />
+        <meta property="og:description" content="Discover trending Tollywood, Bollywood and Hollywood movies. Get IMDb ratings, plot summaries, cast details and watchability verdicts on iBommaFlix." />
         <meta property="og:url" content="https://ibommaflix.com/" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="iBommaFlix" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="iBommaFlix - Watch Telugu, Hindi & English Movies" />
+        <meta name="twitter:title" content="iBommaFlix - Discover Telugu, Hindi & English Movies" />
         <meta name="twitter:description" content="Discover trending Tollywood, Bollywood and Hollywood movies with ratings and reviews." />
       </Helmet>
       <StructuredData data={websiteSchema} />
+      <StructuredData data={organizationSchema} />
       <h1 className="sr-only">iBommaFlix - Discover Movies</h1>
       <CustomNavbar />
       <MovieCarousel movies={carouselMovies} loading={loading} />
@@ -109,9 +124,9 @@ const Home = () => {
 
       {/* Tagline */}
       <Container className="tagline-container">
-        <h2 className="tagline-heading">Where Quality & Clarity Matters</h2>
+        <h2 className="tagline-heading">Where Quality & Clarity Matter</h2>
         <p className="tagline-text">
-          Watch Tollywood, Bollywood, Hollywood movies in HD, exclusively available on iBommaFlix.
+          Discover trending Tollywood, Bollywood, and Hollywood movies with ratings, reviews, and recommendations on iBommaFlix.
         </p>
       </Container>
 
@@ -152,6 +167,8 @@ const Home = () => {
                         className="poster-img"
                         onError={handleImgError}
                         loading="lazy"
+                        width={180}
+                        height={250}
                       />
                       <div className="play-button">&#9654;</div>
                       <p className="poster-title">{m.title}</p>

@@ -30,15 +30,6 @@ const AdBlockDetector = ({ children }) => {
     setDismissed(false);
   }, [location.pathname]);
 
-  if (checking) {
-    return (
-      <div className="adblocker-loading">
-        <div className="loading-spinner"></div>
-        <p>Loading iBommaFlix...</p>
-      </div>
-    );
-  }
-
   return (
     <>
       {children}
