@@ -8,7 +8,7 @@ html {
   scroll-behavior: smooth;
 }
 
-html, body, #root {
+html, body {
   height: 100%;
 }
 
@@ -80,7 +80,7 @@ img {
   }
 }
 
-/* Screen-reader only — visually hidden, accessible to crawlers & assistive tech */
+/* Screen-reader only */
 .sr-only {
   position: absolute;
   width: 1px;

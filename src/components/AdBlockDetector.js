@@ -1,11 +1,12 @@
+"use client";
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { usePathname } from "next/navigation";
 import "./AdBlockDetector.css";
 
 const AdBlockDetector = ({ children }) => {
   const [adBlocked, setAdBlocked] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  const location = useLocation();
+  const pathname = usePathname();
 
   useEffect(() => {
     const checkAdBlocker = async () => {
@@ -25,7 +26,7 @@ const AdBlockDetector = ({ children }) => {
   // Reset dismissed state on route change (gentle reminder)
   useEffect(() => {
     setDismissed(false);
-  }, [location.pathname]);
+  }, [pathname]);
 
   return (
     <>

@@ -1,10 +1,12 @@
+"use client";
 import React, { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { Carousel } from "react-bootstrap";
 import "./MovieCarousel.css";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 
 const getPostersPerSlide = () => {
+  if (typeof window === "undefined") return 6;
   const width = window.innerWidth;
   if (width < 768) return 1;
   if (width < 1024) return 3;
@@ -13,7 +15,7 @@ const getPostersPerSlide = () => {
 
 const MovieCarousel = ({ movies = [], loading = false }) => {
   const [postersPerSlide, setPostersPerSlide] = useState(getPostersPerSlide);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleResize = useCallback(() => {
     setPostersPerSlide(getPostersPerSlide());
@@ -51,7 +53,7 @@ const MovieCarousel = ({ movies = [], loading = false }) => {
                             alt={movieItem.title}
                             className="carousel-poster-img"
                             style={{ cursor: "pointer" }}
-                            onClick={() => navigate(`/movie/${encodeURIComponent(movieItem.title)}`)}
+                            onClick={() => router.push(`/movie/${encodeURIComponent(movieItem.title)}`)}
                             onError={handleImgError}
                             loading={index > 0 ? "lazy" : undefined}
                             fetchPriority={index === 0 ? "high" : undefined}

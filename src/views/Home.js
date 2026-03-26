@@ -1,6 +1,6 @@
+"use client";
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { useRouter } from "next/navigation";
 import { Container } from "react-bootstrap";
 
 import CustomNavbar from "../components/Navbar";
@@ -11,7 +11,6 @@ import { fetchTrendingMovies, buildCarouselMovies } from "../services/tmdbApi";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
 import StructuredData from "../components/StructuredData";
-import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./Home.css";
 
 const Home = () => {
@@ -22,8 +21,7 @@ const Home = () => {
   const [searchInput, setSearchInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const navigate = useNavigate();
-  useDocumentTitle("iBommaFlix - Discover Telugu, Hindi & English Movies");
+  const router = useRouter();
 
   // Fetch latest trending movies from TMDB (single fetch shared with carousel)
   useEffect(() => {
@@ -52,7 +50,7 @@ const Home = () => {
   // Search navigates to movie details page
   const fetchMovie = (searchTerm) => {
     if (!searchTerm || !searchTerm.trim()) return;
-    navigate(`/movie/${encodeURIComponent(searchTerm.trim())}`);
+    router.push(`/movie/${encodeURIComponent(searchTerm.trim())}`);
   };
 
   const handleImgError = (e) => {
@@ -95,19 +93,6 @@ const Home = () => {
 
   return (
     <div>
-      <Helmet>
-        <title>iBommaFlix - Discover Telugu, Hindi &amp; English Movies | Ratings &amp; Reviews</title>
-        <meta name="description" content="Discover trending Tollywood, Bollywood and Hollywood movies. Get IMDb ratings, plot summaries, cast details and watchability verdicts on iBommaFlix." />
-        <link rel="canonical" href="https://ibommaflix.com/" />
-        <meta property="og:title" content="iBommaFlix - Discover Telugu, Hindi & English Movies | Ratings & Reviews" />
-        <meta property="og:description" content="Discover trending Tollywood, Bollywood and Hollywood movies. Get IMDb ratings, plot summaries, cast details and watchability verdicts on iBommaFlix." />
-        <meta property="og:url" content="https://ibommaflix.com/" />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="iBommaFlix" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="iBommaFlix - Discover Telugu, Hindi & English Movies" />
-        <meta name="twitter:description" content="Discover trending Tollywood, Bollywood and Hollywood movies with ratings and reviews." />
-      </Helmet>
       <StructuredData data={websiteSchema} />
       <StructuredData data={organizationSchema} />
       <h1 className="sr-only">iBommaFlix - Discover Movies</h1>
@@ -155,11 +140,11 @@ const Home = () => {
                     <div
                       key={m.id || index}
                       className="poster-card"
-                      onClick={() => navigate(`/movie/${encodeURIComponent(m.title)}`)}
+                      onClick={() => router.push(`/movie/${encodeURIComponent(m.title)}`)}
                       tabIndex={0}
                       role="button"
                       aria-label={`View details for ${m.title}`}
-                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") navigate(`/movie/${encodeURIComponent(m.title)}`); }}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") router.push(`/movie/${encodeURIComponent(m.title)}`); }}
                     >
                       <img
                         src={m.poster}

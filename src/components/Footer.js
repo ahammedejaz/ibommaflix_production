@@ -1,22 +1,23 @@
+"use client";
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import "./Footer.css";
 
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-links">
-        <Link to="/">Home</Link>
-        <Link to="/category/tollywood">Tollywood</Link>
-        <Link to="/category/bollywood">Bollywood</Link>
-        <Link to="/category/hollywood">Hollywood</Link>
-        <Link to="/about">About</Link>
-        <Link to="/contact">Contact</Link>
+        <Link href="/">Home</Link>
+        <Link href="/category/tollywood">Tollywood</Link>
+        <Link href="/category/bollywood">Bollywood</Link>
+        <Link href="/category/hollywood">Hollywood</Link>
+        <Link href="/about">About</Link>
+        <Link href="/contact">Contact</Link>
       </div>
       <div className="footer-legal">
-        <Link to="/privacy-policy">Privacy Policy</Link>
-        <Link to="/terms-of-service">Terms of Service</Link>
-        <Link to="/disclaimer">Disclaimer</Link>
+        <Link href="/privacy-policy">Privacy Policy</Link>
+        <Link href="/terms-of-service">Terms of Service</Link>
+        <Link href="/disclaimer">Disclaimer</Link>
       </div>
       <p>&copy; 2026 🎬iBommaFlix. All Rights Reserved.</p>
       <p className="footer-credit">Powered by <a href="https://www.omdbapi.com/" target="_blank" rel="noopener noreferrer">OMDb API</a></p>

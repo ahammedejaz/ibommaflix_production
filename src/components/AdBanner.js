@@ -1,9 +1,10 @@
+"use client";
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { usePathname } from "next/navigation";
 
 const AdBanner = ({ adSlot, adFormat = "auto", responsive = true }) => {
   const adRef = useRef(null);
-  const location = useLocation();
+  const pathname = usePathname();
   const [adBlocked, setAdBlocked] = useState(false);
 
   useEffect(() => {
@@ -18,7 +19,7 @@ const AdBanner = ({ adSlot, adFormat = "auto", responsive = true }) => {
     } catch {
       setAdBlocked(true);
     }
-  }, [location.pathname]);
+  }, [pathname]);
 
   if (adBlocked) return null;
 
@@ -33,7 +34,7 @@ const AdBanner = ({ adSlot, adFormat = "auto", responsive = true }) => {
         data-ad-format={adFormat}
         data-full-width-responsive={responsive ? "true" : "false"}
         ref={adRef}
-        key={location.pathname}
+        key={pathname}
       />
     </div>
   );

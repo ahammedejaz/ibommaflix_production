@@ -1,26 +1,24 @@
+"use client";
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import CustomNavbar from "../components/Navbar";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
 import StructuredData from "../components/StructuredData";
-import useDocumentTitle from "../hooks/useDocumentTitle";
 import { searchMovieByTitle, fetchMovieTrailers, fetchSimilarMovies, getTmdbMovieId } from "../services/tmdbApi";
 import BreadcrumbSchema from "../components/BreadcrumbSchema";
 import "./MovieDetails.css";
 
-const MovieDetails = () => {
-  const { title } = useParams();
-  const navigate = useNavigate();
+const MovieDetails = ({ titleParam }) => {
+  const title = titleParam;
+  const router = useRouter();
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [trailers, setTrailers] = useState([]);
   const [similarMovies, setSimilarMovies] = useState([]);
   const [activeTrailer, setActiveTrailer] = useState(null);
   const OMDB_API_KEY = process.env.REACT_APP_OMDB_API_KEY;
-  useDocumentTitle(movie ? `${movie.Title} (${movie.Year}) - iBommaFlix` : "Loading... - iBommaFlix");
 
   const getVerdict = (rating) => {
     if (!rating || rating === "N/A") return "Rating unavailable";
@@ -205,10 +203,6 @@ const MovieDetails = () => {
   if (!movie) {
     return (
       <div>
-        <Helmet>
-          <title>Movie Not Found - iBommaFlix</title>
-          <meta name="robots" content="noindex" />
-        </Helmet>
         <CustomNavbar />
         <div className="movie-details-loading">
           <h2 style={{ color: "#FFD700", marginBottom: "10px" }}>Movie Not Found</h2>
@@ -216,7 +210,7 @@ const MovieDetails = () => {
             Sorry, we couldn't find "{decodeURIComponent(title)}" in our database.
             <br />Try searching with a different spelling or check the movie title.
           </p>
-          <button className="back-btn" onClick={() => navigate(-1)}>&#8592; Go Back</button>
+          <button className="back-btn" onClick={() => router.back()}>&#8592; Go Back</button>
         </div>
       </div>
     );
@@ -254,22 +248,6 @@ const MovieDetails = () => {
 
   return (
     <div>
-      <Helmet>
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDesc} />
-        <link rel="canonical" href={canonicalUrl} />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDesc} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:type" content="video.movie" />
-        <meta property="og:site_name" content="iBommaFlix" />
-        {movie.Poster && movie.Poster !== "N/A" && (
-          <meta property="og:image" content={movie.Poster} />
-        )}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={pageTitle} />
-        <meta name="twitter:description" content={pageDesc} />
-      </Helmet>
       <StructuredData data={movieSchema} />
       <BreadcrumbSchema items={[
         { name: "Home", url: "https://ibommaflix.com/" },
@@ -278,7 +256,7 @@ const MovieDetails = () => {
       ]} />
       <CustomNavbar />
       <div className="movie-details-container">
-        <button className="back-btn" onClick={() => navigate(-1)}>&#8592; Back</button>
+        <button className="back-btn" onClick={() => router.back()}>&#8592; Back</button>
 
         {/* Title section — full width like IMDb */}
         <div className="movie-header">
@@ -403,7 +381,7 @@ const MovieDetails = () => {
                 <div
                   key={m.id}
                   className="similar-movie-card"
-                  onClick={() => navigate(`/movie/${encodeURIComponent(m.title)}`)}
+                  onClick={() => router.push(`/movie/${encodeURIComponent(m.title)}`)}
                   style={{ cursor: "pointer" }}
                 >
                   <img

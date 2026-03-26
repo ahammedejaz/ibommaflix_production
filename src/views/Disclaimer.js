@@ -1,23 +1,11 @@
+"use client";
 import React from "react";
-import { Helmet } from "react-helmet-async";
 import CustomNavbar from "../components/Navbar";
-import useDocumentTitle from "../hooks/useDocumentTitle";
 import "./Legal.css";
 
 const Disclaimer = () => {
-  useDocumentTitle("Disclaimer - iBommaFlix");
   return (
     <div>
-      <Helmet>
-        <title>Disclaimer - iBommaFlix</title>
-        <meta name="description" content="Read iBommaFlix's disclaimer about movie ratings, reviews and content accuracy." />
-        <link rel="canonical" href="https://ibommaflix.com/disclaimer" />
-        <meta property="og:title" content="Disclaimer - iBommaFlix" />
-        <meta property="og:description" content="Read iBommaFlix's disclaimer about movie ratings and content accuracy." />
-        <meta property="og:url" content="https://ibommaflix.com/disclaimer" />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="iBommaFlix" />
-      </Helmet>
       <CustomNavbar />
       <div className="legal-container">
         <h1 className="legal-title">Disclaimer</h1>

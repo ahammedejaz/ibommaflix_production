@@ -1,9 +1,11 @@
+"use client";
 import React, { useState } from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
-import { Link, useLocation } from "react-router-dom";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const CustomNavbar = () => {
-  const location = useLocation();
+  const pathname = usePathname();
   const [expanded, setExpanded] = useState(false);
 
   const navItems = [
@@ -18,7 +20,7 @@ const CustomNavbar = () => {
   return (
     <Navbar bg="dark" expand="lg" variant="dark" expanded={expanded} onToggle={setExpanded}>
       <Container>
-        <Navbar.Brand as={Link} to="/" onClick={() => setExpanded(false)}>🎬iBommaFlix</Navbar.Brand>
+        <Navbar.Brand as={Link} href="/" onClick={() => setExpanded(false)}>🎬iBommaFlix</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
@@ -26,8 +28,8 @@ const CustomNavbar = () => {
               <Nav.Link
                 key={item.path}
                 as={Link}
-                to={item.path}
-                className={location.pathname === item.path ? "nav-active" : ""}
+                href={item.path}
+                className={pathname === item.path ? "nav-active" : ""}
                 onClick={() => setExpanded(false)}
               >
                 {item.label}

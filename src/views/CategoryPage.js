@@ -1,12 +1,11 @@
+"use client";
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import Link from "next/link";
 import CustomNavbar from "../components/Navbar";
 import SkeletonCard from "../components/SkeletonCard";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
 import { fetchTrendingMovies } from "../services/tmdbApi";
-import useDocumentTitle from "../hooks/useDocumentTitle";
 import BreadcrumbSchema from "../components/BreadcrumbSchema";
 import MovieListSchema from "../components/MovieListSchema";
 import "./CategoryPage.css";
@@ -32,15 +31,14 @@ const categoryDescriptions = {
   }
 };
 
-const CategoryPage = () => {
-  const { type } = useParams();
+const CategoryPage = ({ typeParam }) => {
+  const type = typeParam;
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
   const label = categoryLabels[type];
-  useDocumentTitle(label ? `${label} Movies - iBommaFlix` : "Category - iBommaFlix");
 
   const fetchPage = useCallback(async (pageNum) => {
     if (!label) return;
@@ -77,7 +75,7 @@ const CategoryPage = () => {
         <CustomNavbar />
         <div className="category-not-found">
           <p>Category not found.</p>
-          <Link to="/" className="home-link">Go Home</Link>
+          <Link href="/" className="home-link">Go Home</Link>
         </div>
       </div>
     );
@@ -89,19 +87,6 @@ const CategoryPage = () => {
 
   return (
     <div>
-      <Helmet>
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDesc} />
-        <link rel="canonical" href={canonicalUrl} />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDesc} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="iBommaFlix" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={pageTitle} />
-        <meta name="twitter:description" content={pageDesc} />
-      </Helmet>
       <BreadcrumbSchema items={[
         { name: "Home", url: "https://ibommaflix.com/" },
         { name: `${label} Movies`, url: canonicalUrl }
@@ -126,7 +111,7 @@ const CategoryPage = () => {
         <div className="category-grid">
           {movies.map((m, index) => (
             <React.Fragment key={m.id || index}>
-              <Link to={`/movie/${encodeURIComponent(m.title)}`} className="category-card">
+              <Link href={`/movie/${encodeURIComponent(m.title)}`} className="category-card">
                 <img
                   src={m.poster}
                   alt={m.title}
