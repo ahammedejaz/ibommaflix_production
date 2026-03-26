@@ -37,38 +37,76 @@ const MovieDetails = () => {
     const year = parseInt(movieData.Year, 10);
     const genres = movieData.Genre && movieData.Genre !== "N/A" ? movieData.Genre.split(",").map(g => g.trim()) : [];
     const director = movieData.Director && movieData.Director !== "N/A" ? movieData.Director : null;
+    const actors = movieData.Actors && movieData.Actors !== "N/A" ? movieData.Actors.split(",").map(a => a.trim()) : [];
+    const leadActor = actors[0] || null;
+    const awards = movieData.Awards && movieData.Awards !== "N/A" ? movieData.Awards : "";
+    const runtime = parseInt(movieData.Runtime, 10);
+    const language = movieData.Language && movieData.Language !== "N/A" ? movieData.Language.split(",")[0].trim() : null;
+    const rated = movieData.Rated && movieData.Rated !== "N/A" ? movieData.Rated : null;
     const currentYear = new Date().getFullYear();
-    const isClassic = year < 2000;
-    const isRecent = currentYear - year <= 2;
 
-    let context = "";
-    if (isClassic) {
-      context = `Released in ${movieData.Year}, this ${genres[0] || "film"} has stood the test of time as a notable entry in cinema history.`;
-    } else if (isRecent) {
-      context = `As a ${movieData.Year} release, this ${genres[0] || "film"} represents some of the latest offerings from the industry.`;
+    const parts = [];
+
+    // Opening — varied based on multiple factors
+    const hasOscar = awards.toLowerCase().includes("oscar") || awards.toLowerCase().includes("academy award");
+    if (hasOscar) {
+      parts.push(`An Academy Award-recognized film, ${movieData.Title} stands as one of the most critically celebrated titles in our catalog.`);
+    } else if (year >= currentYear - 1) {
+      parts.push(`One of the freshest additions to iBommaFlix, ${movieData.Title} (${movieData.Year}) arrives with considerable buzz from audiences and critics alike.`);
+    } else if (year < 1990) {
+      parts.push(`A classic from ${movieData.Year}, ${movieData.Title} remains a defining work of its era and continues to influence filmmakers today.`);
+    } else if (year < 2010) {
+      parts.push(`Released in ${movieData.Year}, ${movieData.Title} has earned its place as a modern classic that viewers return to time and again.`);
+    } else if (rating >= 7.5) {
+      parts.push(`${movieData.Title} (${movieData.Year}) has established itself as a standout ${genres[0] || "film"} that consistently earns praise from both audiences and critics.`);
     } else {
-      context = `This ${movieData.Year} ${genres[0] || "film"} continues to attract viewers years after its initial release.`;
+      parts.push(`${movieData.Title} (${movieData.Year}) is a ${genres[0] || ""} film that offers a distinct perspective within its genre.`);
     }
 
-    let quality = "";
+    // Rating analysis — specific and opinionated
     if (isNaN(rating)) {
-      quality = "Rating data is currently unavailable for this title. Check back later for updated information.";
-    } else if (rating >= 8) {
-      quality = `With an impressive ${movieData.imdbRating}/10 rating, this film is widely regarded as exceptional. It ranks among the highest-rated titles in its genre and is a must-see for any serious movie fan.`;
-    } else if (rating >= 6.5) {
-      quality = `Scoring ${movieData.imdbRating}/10, this film delivers a solid viewing experience. While not flawless, it offers enough quality entertainment to justify your time, especially if you enjoy ${genres.slice(0, 2).join(" and ") || "this genre"}.`;
-    } else if (rating >= 5) {
-      quality = `With a ${movieData.imdbRating}/10 rating, this film received mixed reviews. It may appeal to dedicated fans of ${genres[0] || "the genre"}, but casual viewers might want to explore higher-rated alternatives first.`;
+      parts.push("Rating information is not yet available for this title.");
+    } else if (rating >= 8.5) {
+      parts.push(`Its exceptional ${movieData.imdbRating}/10 IMDb rating places it in the top tier of all films on our platform — a rare achievement that signals near-universal acclaim.`);
+    } else if (rating >= 7.5) {
+      parts.push(`With a strong ${movieData.imdbRating}/10 on IMDb, the film delivers on its promises and is well worth your time, particularly if ${genres.slice(0, 2).join(" or ") || "quality cinema"} appeals to you.`);
+    } else if (rating >= 6) {
+      parts.push(`Its ${movieData.imdbRating}/10 IMDb score reflects a film that has its strengths but may not land equally with all viewers — worth checking out if the premise interests you.`);
+    } else if (rating >= 4) {
+      parts.push(`At ${movieData.imdbRating}/10 on IMDb, this one divided audiences. It has its defenders, but you may want to read the plot summary before committing your evening.`);
     } else {
-      quality = `Rated ${movieData.imdbRating}/10, this film struggled with critics and audiences alike. Unless you are a completist or a dedicated fan of ${director || "the cast"}, you may want to skip this one.`;
+      parts.push(`Rated ${movieData.imdbRating}/10 on IMDb, this is one for completists only. Most viewers will find better options in our catalog.`);
     }
 
-    let directorNote = "";
-    if (director) {
-      directorNote = ` Directed by ${director}, the film carries a distinctive creative vision that shapes its overall tone and storytelling approach.`;
+    // Director/actor note
+    if (director && leadActor) {
+      parts.push(`Directed by ${director} and led by ${leadActor}, the film brings together talent that shapes its distinctive identity.`);
+    } else if (director) {
+      parts.push(`Under ${director}'s direction, the film carries a clear creative vision throughout.`);
+    } else if (leadActor) {
+      parts.push(`${leadActor} anchors the film with a performance that defines its emotional center.`);
     }
 
-    return `${context} ${quality}${directorNote}`;
+    // Runtime/content advisory
+    if (runtime > 160) {
+      parts.push(`At ${movieData.Runtime}, this is a lengthy watch — settle in with snacks and clear your schedule.`);
+    } else if (runtime > 0 && runtime < 95) {
+      parts.push(`With a lean ${movieData.Runtime} runtime, it does not waste a single minute getting its story across.`);
+    }
+
+    // Language note for non-English films
+    if (language && language !== "English") {
+      parts.push(`Presented in ${language}, the film is part of a rich cinematic tradition that iBommaFlix is proud to feature alongside global releases.`);
+    }
+
+    // Content rating advisory
+    if (rated === "R" || rated === "A") {
+      parts.push("Note: this film carries a mature content rating and is intended for adult audiences.");
+    } else if (rated === "G" || rated === "PG" || rated === "U") {
+      parts.push("This is a family-friendly title suitable for viewers of all ages.");
+    }
+
+    return parts.join(" ");
   };
 
   useEffect(() => {
