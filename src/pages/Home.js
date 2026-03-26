@@ -184,6 +184,69 @@ const Home = () => {
         )}
       </div>
 
+      {/* Editorial Content Section */}
+      <div className="editorial-section">
+        <Container>
+          <div className="editorial-content">
+            <h2 className="editorial-heading">Your Complete Guide to Indian & International Cinema</h2>
+            <p>
+              iBommaFlix is a movie discovery platform built for fans of Telugu, Hindi, and English cinema. Whether you are a lifelong
+              Tollywood enthusiast following the latest releases from Hyderabad's film industry, a Bollywood devotee who grew up with
+              the musical dramas of Mumbai, or a Hollywood fan tracking the biggest global blockbusters, iBommaFlix brings everything
+              together in one place. We aggregate movie data from trusted sources including IMDb and TMDB to give you ratings, plot
+              summaries, cast details, trailers, and our own watchability verdicts for every title in our catalog.
+            </p>
+
+            <h3 className="editorial-subheading">What is Tollywood?</h3>
+            <p>
+              Tollywood refers to the Telugu-language film industry based in Hyderabad, Telangana. It is one of the largest film
+              industries in India by number of films produced and box office revenue. Telugu cinema has gained massive global recognition
+              in recent years, with films like Baahubali, RRR, and Pushpa breaking records worldwide. The industry is known for its
+              grand visual storytelling, powerful action sequences, and strong emotional narratives. On iBommaFlix, you can browse
+              trending Telugu movies, check their ratings, and discover hidden gems you might have missed.
+            </p>
+
+            <h3 className="editorial-subheading">What is Bollywood?</h3>
+            <p>
+              Bollywood is the Hindi-language film industry headquartered in Mumbai, Maharashtra. It is the most prolific film industry
+              in the world by number of films produced annually and one of the largest by revenue. Known globally for its colorful
+              musical sequences, dramatic storytelling, and star-driven narratives, Bollywood has produced iconic films that resonate
+              across cultures. From timeless classics like Sholay and Dilwale Dulhania Le Jayenge to modern blockbusters like Dangal
+              and Pathaan, Hindi cinema continues to captivate audiences worldwide. iBommaFlix curates the latest and most popular
+              Bollywood releases alongside all-time favorites.
+            </p>
+
+            <h3 className="editorial-subheading">What is Hollywood?</h3>
+            <p>
+              Hollywood refers to the American English-language film industry centered in Los Angeles, California. It is the oldest
+              and most influential film industry globally, responsible for franchises like Marvel, Star Wars, Harry Potter, and The
+              Lord of the Rings. Hollywood sets the benchmark for visual effects, cinematography, and global distribution. On iBommaFlix,
+              we feature trending Hollywood releases alongside award-winning dramas, sci-fi epics, and critically acclaimed indie films
+              to help you find your next favorite movie.
+            </p>
+
+            <h3 className="editorial-subheading">How Our Rating System Works</h3>
+            <p>
+              Every movie on iBommaFlix displays its IMDb or TMDB rating alongside our own watchability verdict. Our verdict system
+              translates numeric scores into simple, actionable recommendations: movies rated above 8.0 are labeled "Worth watching"
+              as they represent the best of their genre. Films scoring between 6.5 and 8.0 receive a "Good to watch" verdict, indicating
+              solid entertainment. Titles in the 5.0 to 6.5 range are marked "Average," and anything below 5.0 is flagged as "Not
+              worth watching." This system helps you make quick decisions without analyzing numbers, especially when browsing through
+              hundreds of titles across three industries.
+            </p>
+
+            <h3 className="editorial-subheading">Why Choose iBommaFlix?</h3>
+            <p>
+              Unlike generic movie databases, iBommaFlix is purpose-built for audiences who watch across Indian and international
+              cinema. We bring together Tollywood, Bollywood, and Hollywood under one roof so you do not need to switch between
+              multiple platforms. Our interface is designed for quick discovery: browse trending titles, search for any movie by name,
+              view trailers, check cast and crew details, and read plot summaries, all without creating an account or paying a
+              subscription. iBommaFlix is free, fast, and focused on helping you find great movies to watch.
+            </p>
+          </div>
+        </Container>
+      </div>
+
     </div>
   );
 };

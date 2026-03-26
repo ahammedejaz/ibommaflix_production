@@ -31,6 +31,46 @@ const MovieDetails = () => {
     return "Worth watching";
   };
 
+  const getEditorialSnippet = (movieData) => {
+    if (!movieData) return null;
+    const rating = parseFloat(movieData.imdbRating);
+    const year = parseInt(movieData.Year, 10);
+    const genres = movieData.Genre && movieData.Genre !== "N/A" ? movieData.Genre.split(",").map(g => g.trim()) : [];
+    const director = movieData.Director && movieData.Director !== "N/A" ? movieData.Director : null;
+    const currentYear = new Date().getFullYear();
+    const isClassic = year < 2000;
+    const isRecent = currentYear - year <= 2;
+
+    let context = "";
+    if (isClassic) {
+      context = `Released in ${movieData.Year}, this ${genres[0] || "film"} has stood the test of time as a notable entry in cinema history.`;
+    } else if (isRecent) {
+      context = `As a ${movieData.Year} release, this ${genres[0] || "film"} represents some of the latest offerings from the industry.`;
+    } else {
+      context = `This ${movieData.Year} ${genres[0] || "film"} continues to attract viewers years after its initial release.`;
+    }
+
+    let quality = "";
+    if (isNaN(rating)) {
+      quality = "Rating data is currently unavailable for this title. Check back later for updated information.";
+    } else if (rating >= 8) {
+      quality = `With an impressive ${movieData.imdbRating}/10 rating, this film is widely regarded as exceptional. It ranks among the highest-rated titles in its genre and is a must-see for any serious movie fan.`;
+    } else if (rating >= 6.5) {
+      quality = `Scoring ${movieData.imdbRating}/10, this film delivers a solid viewing experience. While not flawless, it offers enough quality entertainment to justify your time, especially if you enjoy ${genres.slice(0, 2).join(" and ") || "this genre"}.`;
+    } else if (rating >= 5) {
+      quality = `With a ${movieData.imdbRating}/10 rating, this film received mixed reviews. It may appeal to dedicated fans of ${genres[0] || "the genre"}, but casual viewers might want to explore higher-rated alternatives first.`;
+    } else {
+      quality = `Rated ${movieData.imdbRating}/10, this film struggled with critics and audiences alike. Unless you are a completist or a dedicated fan of ${director || "the cast"}, you may want to skip this one.`;
+    }
+
+    let directorNote = "";
+    if (director) {
+      directorNote = ` Directed by ${director}, the film carries a distinctive creative vision that shapes its overall tone and storytelling approach.`;
+    }
+
+    return `${context} ${quality}${directorNote}`;
+  };
+
   useEffect(() => {
     const fetchMovie = async () => {
       setMovie(null);
@@ -274,6 +314,14 @@ const MovieDetails = () => {
                 </div>
               )}
             </div>
+
+            {/* Editorial Analysis */}
+            {getEditorialSnippet(movie) && (
+              <div className="movie-editorial">
+                <h3 className="movie-editorial-title">iBommaFlix Verdict</h3>
+                <p className="movie-editorial-text">{getEditorialSnippet(movie)}</p>
+              </div>
+            )}
           </div>
         </div>
 

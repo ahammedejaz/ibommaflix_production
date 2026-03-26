@@ -155,3 +155,37 @@
 .back-to-top-link:hover {
   color: #FFD700;
 }
+
+/* Category Description */
+.category-description {
+  max-width: 800px;
+  margin: 0 auto 30px;
+  padding: 0 10px;
+  text-align: left;
+}
+
+.category-description-intro {
+  color: #ccc;
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+
+.category-description-detail {
+  color: #999;
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .category-description {
+    text-align: left;
+  }
+  .category-description-intro {
+    font-size: 14px;
+  }
+  .category-description-detail {
+    font-size: 13px;
+  }
+}

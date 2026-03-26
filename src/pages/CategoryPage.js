@@ -17,6 +17,21 @@ const categoryLabels = {
   hollywood: "Hollywood",
 };
 
+const categoryDescriptions = {
+  tollywood: {
+    intro: "Tollywood, the Telugu-language film industry based in Hyderabad, has emerged as one of India's most dynamic and globally recognized cinema powerhouses. Known for its grand visual storytelling, high-octane action sequences, and emotionally resonant narratives, Telugu cinema consistently pushes the boundaries of Indian filmmaking.",
+    detail: "From the record-breaking Baahubali franchise that introduced Indian cinema to global audiences, to the raw intensity of Pushpa and the patriotic fervor of RRR, Tollywood has proven its ability to create films that transcend language barriers. The industry boasts a rich talent pool including directors like S.S. Rajamouli and Sukumar, and stars like Jr. NTR, Ram Charan, Allu Arjun, and Mahesh Babu. Beyond blockbusters, Telugu cinema also excels in thought-provoking dramas, sharp comedies, and compelling thrillers. Browse the latest trending Telugu movies below, complete with IMDb ratings and our watchability verdicts."
+  },
+  bollywood: {
+    intro: "Bollywood, the Hindi-language film industry headquartered in Mumbai, is the most prolific film industry in the world by number of films produced annually. For over a century, Hindi cinema has been the cultural heartbeat of India, blending music, dance, drama, and storytelling into a uniquely captivating art form.",
+    detail: "From the golden era classics of Raj Kapoor and Guru Dutt to the modern masterstrokes of Rajkumar Hirani and Sanjay Leela Bhansali, Bollywood has continuously reinvented itself while staying true to its roots in emotional storytelling. The industry has given the world iconic stars like Shah Rukh Khan, Amitabh Bachchan, Aamir Khan, and Deepika Padukone. Today's Bollywood embraces diverse genres from gritty crime dramas and biographical epics to romantic comedies and social commentaries. Explore trending Hindi movies below with ratings, cast details, and plot summaries to find your next favorite film."
+  },
+  hollywood: {
+    intro: "Hollywood, the American English-language film industry centered in Los Angeles, California, has been the global benchmark for cinema since the early twentieth century. With unmatched budgets, cutting-edge visual effects, and worldwide distribution networks, Hollywood productions reach audiences in virtually every country on earth.",
+    detail: "The industry is home to the most iconic franchises in film history: Marvel, Star Wars, Harry Potter, James Bond, and The Lord of the Rings, among many others. Hollywood also leads in technical innovation, from pioneering CGI and motion capture to the rise of streaming-first releases. Beyond the spectacle, American cinema produces critically acclaimed dramas, indie gems, and documentaries that shape global conversations. Directors like Christopher Nolan, Denis Villeneuve, and Greta Gerwig continue to push creative boundaries. Discover the latest trending Hollywood releases below with comprehensive ratings and recommendations."
+  }
+};
+
 const CategoryPage = () => {
   const { type } = useParams();
   const [movies, setMovies] = useState([]);
@@ -99,6 +114,12 @@ const CategoryPage = () => {
       <CustomNavbar />
       <div className="category-container">
         <h1 className="category-page-title">{label} Movies</h1>
+        {categoryDescriptions[type] && (
+          <div className="category-description">
+            <p className="category-description-intro">{categoryDescriptions[type].intro}</p>
+            <p className="category-description-detail">{categoryDescriptions[type].detail}</p>
+          </div>
+        )}
         {movies.length === 0 && loading ? (
           <SkeletonCard count={8} layout="grid" />
         ) : null}

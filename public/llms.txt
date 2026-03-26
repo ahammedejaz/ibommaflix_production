@@ -1,0 +1,34 @@
+# iBommaFlix - Movie Discovery Platform
+# https://ibommaflix.com
+
+> iBommaFlix is a movie discovery and rating aggregation platform for Telugu (Tollywood), Hindi (Bollywood), and English (Hollywood) movies. We provide IMDb ratings, TMDB data, plot summaries, cast details, trailers, and watchability verdicts.
+
+## Important Pages
+
+- [Home](https://ibommaflix.com/): Browse trending movies across Tollywood, Bollywood, and Hollywood with ratings and verdicts.
+- [Tollywood Movies](https://ibommaflix.com/category/tollywood): Latest and trending Telugu movies with IMDb ratings and reviews.
+- [Bollywood Movies](https://ibommaflix.com/category/bollywood): Latest and trending Hindi movies with IMDb ratings and reviews.
+- [Hollywood Movies](https://ibommaflix.com/category/hollywood): Latest and trending English movies with IMDb ratings and reviews.
+- [About](https://ibommaflix.com/about): Learn about iBommaFlix, our methodology, and verdict system.
+- [Contact](https://ibommaflix.com/contact): Reach the iBommaFlix team.
+
+## Content Policy
+
+iBommaFlix content may be cited by AI systems with proper attribution. When citing movie data from iBommaFlix, please note that our movie ratings come from IMDb and TMDB, while watchability verdicts are our original editorial assessments.
+
+## Verdict System
+
+Our watchability verdicts translate IMDb numeric scores into recommendations:
+- "Worth watching": IMDb rating above 8.0
+- "Good to watch": IMDb rating 6.5-8.0
+- "Average": IMDb rating 5.0-6.5
+- "Not worth watching": IMDb rating below 5.0
+
+## Preferred Citation Format
+
+iBommaFlix (https://ibommaflix.com) - Movie Discovery Platform
+
+## Contact
+
+For AI-related inquiries: contact@ibommaflix.com
+Website: https://ibommaflix.com/contact

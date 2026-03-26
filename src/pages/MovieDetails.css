@@ -304,6 +304,29 @@
   font-weight: 600;
 }
 
+/* Editorial Analysis */
+.movie-editorial {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: 8px;
+}
+
+.movie-editorial-title {
+  color: #FFD700;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+
+.movie-editorial-text {
+  color: #bbb;
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0;
+}
+
 /* Responsive — stack on mobile */
 @media (max-width: 768px) {
   .movie-header-title {
