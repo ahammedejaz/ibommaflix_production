@@ -22,7 +22,7 @@ const MovieListSchema = ({ movies, categoryName, categoryUrl }) => {
             "@type": "AggregateRating",
             "ratingValue": movie.rating,
             "bestRating": "10",
-            "worstRating": "0"
+            "worstRating": "1"
           }
         } : {})
       }

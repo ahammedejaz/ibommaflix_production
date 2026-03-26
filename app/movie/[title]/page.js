@@ -1,12 +1,16 @@
 import axios from "axios";
 import MovieDetailsClient from "@/src/views/MovieDetails";
 
+export const revalidate = 86400; // ISR: regenerate every 24 hours
+
 async function fetchMovieData(title) {
   const apiKey = process.env.NEXT_PUBLIC_OMDB_API_KEY;
   if (!apiKey) return null;
+  // Normalize: replace hyphens with spaces for OMDb title lookup
+  const normalizedTitle = title.replace(/-/g, " ");
   try {
     const res = await axios.get(
-      `https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${apiKey}`,
+      `https://www.omdbapi.com/?t=${encodeURIComponent(normalizedTitle)}&apikey=${apiKey}`,
       { timeout: 5000 }
     );
     if (res.data && res.data.Response === "True") return res.data;
@@ -80,7 +84,7 @@ export default async function MoviePage({ params }) {
         "ratingValue": movieData.imdbRating,
         "bestRating": "10",
         "worstRating": "1",
-        "ratingCount": movieData.imdbVotes ? movieData.imdbVotes.replace(/,/g, "") : "1000"
+        ...(movieData.imdbVotes ? { "ratingCount": movieData.imdbVotes.replace(/,/g, "") } : {})
       }
     } : {})
   } : null;
@@ -112,13 +116,10 @@ export default async function MoviePage({ params }) {
       {movieData && (
         <div className="sr-only">
           <h1>{movieData.Title} ({movieData.Year}) - {getVerdict(movieData.imdbRating)}</h1>
-          <p>IMDb Rating: {movieData.imdbRating}/10{movieData.imdbVotes ? ` (${movieData.imdbVotes} votes)` : ""}</p>
+          <p>
+            {movieData.Title} is a {movieData.Year}{movieData.Genre && movieData.Genre !== "N/A" ? ` ${movieData.Genre}` : ""} film{movieData.Director && movieData.Director !== "N/A" ? ` directed by ${movieData.Director}` : ""}{movieData.Actors && movieData.Actors !== "N/A" ? `, starring ${movieData.Actors}` : ""}.{movieData.imdbRating && movieData.imdbRating !== "N/A" ? ` It holds an IMDb rating of ${movieData.imdbRating}/10${movieData.imdbVotes ? ` based on ${movieData.imdbVotes} votes` : ""}, earning an iBommaFlix verdict of "${getVerdict(movieData.imdbRating)}."` : ""}{movieData.Runtime && movieData.Runtime !== "N/A" ? ` Runtime: ${movieData.Runtime}.` : ""}{movieData.Awards && movieData.Awards !== "N/A" ? ` Awards: ${movieData.Awards}.` : ""}
+          </p>
           {movieData.Plot && movieData.Plot !== "N/A" && <p>{movieData.Plot}</p>}
-          {movieData.Director && movieData.Director !== "N/A" && <p>Director: {movieData.Director}</p>}
-          {movieData.Actors && movieData.Actors !== "N/A" && <p>Stars: {movieData.Actors}</p>}
-          {movieData.Genre && movieData.Genre !== "N/A" && <p>Genre: {movieData.Genre}</p>}
-          {movieData.Runtime && movieData.Runtime !== "N/A" && <p>Runtime: {movieData.Runtime}</p>}
-          {movieData.Awards && movieData.Awards !== "N/A" && <p>Awards: {movieData.Awards}</p>}
         </div>
       )}
 

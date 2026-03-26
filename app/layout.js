@@ -69,7 +69,12 @@ export default function RootLayout({ children }) {
             "@type": "Organization",
             "name": "iBommaFlix",
             "url": "https://ibommaflix.com",
-            "logo": "https://ibommaflix.com/logo512.png",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://ibommaflix.com/logo512.png",
+              "width": 512,
+              "height": 512
+            },
             "description": "Movie discovery and rating aggregation platform for Telugu, Hindi, and English movies",
             "contactPoint": {
               "@type": "ContactPoint",
@@ -89,9 +94,9 @@ export default function RootLayout({ children }) {
         {/* Google Analytics (GA4) */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-13BP0DFQ6Z"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="ga4-config" strategy="afterInteractive">
+        <Script id="ga4-config" strategy="lazyOnload">
           {`window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
