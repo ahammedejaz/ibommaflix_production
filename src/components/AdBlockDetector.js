@@ -5,7 +5,6 @@ import "./AdBlockDetector.css";
 const AdBlockDetector = ({ children }) => {
   const [adBlocked, setAdBlocked] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  const [checking, setChecking] = useState(true);
   const location = useLocation();
 
   useEffect(() => {
@@ -18,8 +17,6 @@ const AdBlockDetector = ({ children }) => {
         setAdBlocked(false);
       } catch {
         setAdBlocked(true);
-      } finally {
-        setChecking(false);
       }
     };
     checkAdBlocker();
