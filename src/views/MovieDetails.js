@@ -5,16 +5,14 @@ import axios from "axios";
 import CustomNavbar from "../components/Navbar";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
-import StructuredData from "../components/StructuredData";
 import { searchMovieByTitle, fetchMovieTrailers, fetchSimilarMovies, getTmdbMovieId } from "../services/tmdbApi";
-import BreadcrumbSchema from "../components/BreadcrumbSchema";
 import "./MovieDetails.css";
 
-const MovieDetails = ({ titleParam }) => {
+const MovieDetails = ({ titleParam, initialMovie = null }) => {
   const title = titleParam;
   const router = useRouter();
-  const [movie, setMovie] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [movie, setMovie] = useState(initialMovie);
+  const [loading, setLoading] = useState(!initialMovie);
   const [trailers, setTrailers] = useState([]);
   const [similarMovies, setSimilarMovies] = useState([]);
   const [activeTrailer, setActiveTrailer] = useState(null);
@@ -108,6 +106,9 @@ const MovieDetails = ({ titleParam }) => {
   };
 
   useEffect(() => {
+    // If server pre-fetched this movie, skip client fetch
+    if (initialMovie) return;
+
     const fetchMovie = async () => {
       setMovie(null);
       setLoading(true);
@@ -153,7 +154,7 @@ const MovieDetails = ({ titleParam }) => {
     };
 
     fetchMovie();
-  }, [title, OMDB_API_KEY]);
+  }, [title, OMDB_API_KEY, initialMovie]);
 
   // Fetch trailers and similar movies after movie loads
   useEffect(() => {
@@ -216,44 +217,8 @@ const MovieDetails = ({ titleParam }) => {
     );
   }
 
-  const pageTitle = `${movie.Title} (${movie.Year}) - Rating & Review | iBommaFlix`;
-  const pageDesc = `${movie.Title} - IMDb Rating: ${movie.imdbRating || "N/A"}. ${movie.Plot ? movie.Plot.substring(0, 150) : "Discover ratings, cast, and plot details on iBommaFlix."}`;
-  const canonicalUrl = `https://ibommaflix.com/movie/${encodeURIComponent(title)}`;
-
-  const movieSchema = {
-    "@context": "https://schema.org",
-    "@type": "Movie",
-    "name": movie.Title,
-    "url": canonicalUrl,
-    "image": movie.Poster && movie.Poster !== "N/A" ? movie.Poster : undefined,
-    "datePublished": movie.Year,
-    "description": movie.Plot && movie.Plot !== "N/A" ? movie.Plot : undefined,
-    "genre": movie.Genre && movie.Genre !== "N/A" ? movie.Genre.split(",").map(g => g.trim()) : undefined,
-    "director": movie.Director && movie.Director !== "N/A"
-      ? movie.Director.split(",").map(d => ({ "@type": "Person", "name": d.trim() }))
-      : undefined,
-    "actor": movie.Actors && movie.Actors !== "N/A"
-      ? movie.Actors.split(",").map(a => ({ "@type": "Person", "name": a.trim() }))
-      : undefined,
-    ...(movie.imdbRating && movie.imdbRating !== "N/A" ? {
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": movie.imdbRating,
-        "bestRating": "10",
-        "worstRating": "1",
-        "ratingCount": movie.imdbVotes ? movie.imdbVotes.replace(/,/g, "") : "1000"
-      }
-    } : {})
-  };
-
   return (
     <div>
-      <StructuredData data={movieSchema} />
-      <BreadcrumbSchema items={[
-        { name: "Home", url: "https://ibommaflix.com/" },
-        { name: "Movies", url: "https://ibommaflix.com/" },
-        { name: movie.Title, url: canonicalUrl }
-      ]} />
       <CustomNavbar />
       <div className="movie-details-container">
         <button className="back-btn" onClick={() => router.back()}>&#8592; Back</button>

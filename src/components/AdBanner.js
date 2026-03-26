@@ -21,7 +21,7 @@ const AdBanner = ({ adSlot, adFormat = "auto", responsive = true }) => {
     }
   }, [pathname]);
 
-  if (adBlocked) return null;
+  if (adBlocked) return <div style={{ minHeight: "90px" }} />;
 
   return (
     <div style={{ textAlign: "center", margin: "20px 0", minHeight: "90px", maxWidth: "100%", overflow: "hidden" }}>

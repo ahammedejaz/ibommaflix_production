@@ -214,6 +214,29 @@
   }
 }
 
+/* Hero Title */
+.home-hero-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #FFD700;
+  text-align: center;
+  margin: 20px 0 5px;
+  padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+  .home-hero-title {
+    font-size: 20px;
+    margin: 15px 0 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-hero-title {
+    font-size: 18px;
+  }
+}
+
 /* Editorial Content Section */
 .editorial-section {
   background: #0a0a0a;

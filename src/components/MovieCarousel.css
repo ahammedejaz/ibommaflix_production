@@ -7,6 +7,7 @@
   background-color: black;
   padding: 10px 0;
   margin-top: 10px;
+  min-height: 280px;
 }
 
 /* Carousel Container */
@@ -51,6 +52,7 @@
 @media (max-width: 768px) {
   .movie-carousel {
     max-width: 95%;
+    min-height: 400px;
   }
   .carousel-poster-img {
     max-width: 280px;
@@ -60,6 +62,9 @@
 }
 
 @media (max-width: 480px) {
+  .movie-carousel {
+    min-height: 370px;
+  }
   .carousel-poster-img {
     max-width: 250px;
     height: 350px;

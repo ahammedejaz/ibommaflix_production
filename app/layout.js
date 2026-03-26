@@ -43,6 +43,41 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://www.omdbapi.com" />
       </head>
       <body>
+        {/* Site-wide JSON-LD — server-rendered, visible to all crawlers */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "iBommaFlix",
+            "url": "https://ibommaflix.com",
+            "description": "Movie discovery and rating aggregation platform for Telugu, Hindi, and English movies",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://ibommaflix.com/movie/{search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          }) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "iBommaFlix",
+            "url": "https://ibommaflix.com",
+            "logo": "https://ibommaflix.com/logo512.png",
+            "description": "Movie discovery and rating aggregation platform for Telugu, Hindi, and English movies",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "customer support",
+              "url": "https://ibommaflix.com/contact"
+            }
+          }) }}
+        />
         <AdBlockDetector>
           <ScrollToTop />
           <div className="app-container">

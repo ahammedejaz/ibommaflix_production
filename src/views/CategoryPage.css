@@ -156,6 +156,13 @@
   color: #FFD700;
 }
 
+/* SSR Editorial Wrapper (server component) */
+.category-ssr-wrapper {
+  max-width: 1200px;
+  margin: 30px auto 0;
+  padding: 0 20px;
+}
+
 /* Category Description */
 .category-description {
   max-width: 800px;

@@ -10,7 +10,6 @@ import SkeletonCard from "../components/SkeletonCard";
 import { fetchTrendingMovies, buildCarouselMovies } from "../services/tmdbApi";
 import posterPlaceholder from "../assets/poster-placeholder.svg";
 import AdBanner from "../components/AdBanner";
-import StructuredData from "../components/StructuredData";
 import "./Home.css";
 
 const Home = () => {
@@ -64,39 +63,10 @@ const Home = () => {
     { title: "Trending in Hollywood", data: hollywoodMoviesData },
   ];
 
-  const websiteSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "iBommaFlix",
-    "url": "https://ibommaflix.com",
-    "description": "Movie discovery and rating aggregation platform for Telugu, Hindi, and English movies",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://ibommaflix.com/movie/{search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  };
-
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "iBommaFlix",
-    "url": "https://ibommaflix.com",
-    "logo": "https://ibommaflix.com/logo512.png",
-    "description": "Movie discovery and rating aggregation platform for Telugu, Hindi, and English movies",
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "contactType": "customer support",
-      "url": "https://ibommaflix.com/contact"
-    }
-  };
-
   return (
     <div>
-      <StructuredData data={websiteSchema} />
-      <StructuredData data={organizationSchema} />
-      <h1 className="sr-only">iBommaFlix - Discover Movies</h1>
       <CustomNavbar />
+      <h1 className="home-hero-title">Discover Telugu, Hindi & English Movies</h1>
       <MovieCarousel movies={carouselMovies} loading={loading} />
 
       {/* Ad — below hero carousel */}
