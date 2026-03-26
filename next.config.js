@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Output to "build" to match Vercel project's configured Output Directory
+  distDir: "build",
   // Map existing REACT_APP_ env vars so existing service code works without changes
   env: {
     REACT_APP_OMDB_API_KEY: process.env.NEXT_PUBLIC_OMDB_API_KEY,
