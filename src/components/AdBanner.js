@@ -29,7 +29,7 @@ const AdBanner = ({ adSlot, adFormat = "auto", responsive = true }) => {
       <ins
         className="adsbygoogle"
         style={{ display: "block" }}
-        data-ad-client={process.env.REACT_APP_ADSENSE_PUB_ID || "ca-pub-XXXXXXXXXXXXXXXX"}
+        data-ad-client="ca-pub-3321228464173831"
         data-ad-slot={adSlot}
         data-ad-format={adFormat}
         data-full-width-responsive={responsive ? "true" : "false"}

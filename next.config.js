@@ -1,11 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Map existing REACT_APP_ env vars so existing code works without changes
+  // Map existing REACT_APP_ env vars so existing service code works without changes
   env: {
     REACT_APP_OMDB_API_KEY: process.env.NEXT_PUBLIC_OMDB_API_KEY,
     REACT_APP_TMDB_API_KEY: process.env.NEXT_PUBLIC_TMDB_API_KEY,
-    REACT_APP_ADSENSE_PUB_ID: process.env.NEXT_PUBLIC_ADSENSE_PUB_ID,
-    REACT_APP_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
   },
   images: {
     remotePatterns: [
